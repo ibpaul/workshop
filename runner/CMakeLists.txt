@@ -1,3 +1,6 @@
+add_subdirectory(src)
+
+
 #project(FilterRunner)
 
 #add_executable(FilterRunner main.cpp)

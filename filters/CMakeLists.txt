@@ -1,3 +1,1 @@
-#project(FiltersLibrary)
-
-#add_library(filters gaussian.cpp)
+add_subdirectory(src)

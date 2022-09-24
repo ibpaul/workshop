@@ -1,3 +1,4 @@
+#include "gaussian.h"
 
 
 int test_func()
