@@ -1,0 +1,2 @@
+set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/libs/zlib")
+set(ZLIB_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/libs/zlib")
