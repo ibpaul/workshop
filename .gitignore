@@ -13,3 +13,6 @@
 **/.ninja_deps
 **/.ninja_log
 **/build.ninja
+
+# Ignore generated output from compiling third-party libraries.
+/libs

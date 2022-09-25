@@ -12,4 +12,10 @@ void load_image()
     // TODO: Error handling if file not found or unable to be loaded.
     // TODO: Add PNG support by linking to libpng.
     CImg<unsigned char> image("C:/ws/workshop/data/peppers.jpg");
+
+    CImgDisplay main_disp(image, "Test Image");
+
+    while (!main_disp.is_closed()) {
+        main_disp.wait();
+    }
 }
