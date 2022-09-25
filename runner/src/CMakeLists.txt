@@ -1,3 +1,5 @@
 include_directories(${Workshop_SOURCE_DIR}/filters/include)
+include_directories(${Workshop_SOURCE_DIR}/image/include)
 add_executable(runner main.cpp)
-target_link_libraries(runner PUBLIC filters)
+#target_link_libraries(runner PUBLIC filters image png zlib)
+target_link_libraries(runner PUBLIC filters image png)

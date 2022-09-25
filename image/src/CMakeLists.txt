@@ -1,0 +1,4 @@
+include_directories(${Workshop_SOURCE_DIR}/image/include)
+include_directories(${Workshop_SOURCE_DIR}/libs/CImg)
+include_directories(${Workshop_SOURCE_DIR}/libs/libpng)
+add_library(image basic.cpp)

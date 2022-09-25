@@ -13,3 +13,6 @@
 **/.ninja_deps
 **/.ninja_log
 **/build.ninja
+
+# Ignore third-party libraries for now, may want to add these to the repository in the future.
+/libs

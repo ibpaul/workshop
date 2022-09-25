@@ -3,5 +3,10 @@ project(Workshop)
 
 set(CMAKE_CXX_STANDARD 14)
 
+add_definitions(-Dcimg_use_png)
+
 add_subdirectory(filters)
 add_subdirectory(runner)
+add_subdirectory(image)
+add_subdirectory(libs/libpng)
+add_subdirectory(libs/zlib)
