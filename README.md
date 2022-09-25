@@ -2,32 +2,34 @@
 Tools for developing algorithms.
 
 ## Build and Run
-The project uses CMake and can be compiled with normal CMake commands.
+The project can be built and run with the following environments.
 
-1. Run the *cmake* command.
+ - Visual Studio 2022
+ - CLion 2022.2.3
+
+### Visual Studio
+
+1. Run the *cmake* command to generate project files.
 ```
 cmake .
 ```
 
-2. Run `cmake-gui .` to open the settings window and make necessary configurations.
- - Add `ZLIB_LIBRARY` with path to *<repo>/libs/zlib*.
- - Modify `ZLIB_INCLUDE_DIR` to point to *<repo>/libs/zlib*.
- - Modify `ZLIB_LIBRARY_DEBUG` to point to *<repo>/libs/zlib/Debug*.
- - Modify `ZLIB_LIBRARY_RELEASE` to point to *<repo>/libs/zlib/Release*.
- - Click the *Configure* button.
+2. Open the generated Visual Studio solution located at *\<repo\>/Workshop.sln*.
 
-3. Rerun cmake configuration.
-```
-cmake .
-```
+3. Add library link references to the *png* project.
+    - Right-click the *png* project and select *Properties...*.
+    - Expand the group *Configuration Properties -> Linker -> General*. 
+    - For the setting *Additional Library Directories*, add a path to *\<repo\>/libs/zlib/Debug*. 
+    - Expand the group *Configuration Properties -> Linker -> Input*. 
+    - For the setting *Additional Dependencies*, add *zlibd.lib*.
 
-4. Open the Visual Studio solution located at *<repo>/Workshop.sln*.
+4. Build and run the *runner* project by right-clicking it and selecting *Debug -> Start New Instance*.
 
-5. Add library link references to the *png* project.
-  1. Right-click the *png* project and select *Properties...*.
-  2. Expand the group *Configuration Properties -> Linker -> General*.
-  3. For the setting *Additional Library Directories*, add a path to *<repo>/libs/zlib/Debug*.
-  4. Expand the group *Configuratin Properties -> Linker -> Input*.
-  5. For the setting *Additional Dependencies*, add *zlibd.lib*.
 
-6. Build and run the *runner* project by right-clicking it and selecting *Debug -> Start New Instance*.
+### CLion
+
+1. Open the project top-level folder in *CLion*.
+
+2. From the *Configuration* drop-down, select *runner*.
+
+3. Click the *Run* button.
