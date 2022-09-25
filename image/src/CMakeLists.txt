@@ -12,6 +12,7 @@ add_executable(
 target_link_libraries(
     image_test
     GTest::gtest_main
+    image
 )
 
 include(GoogleTest)

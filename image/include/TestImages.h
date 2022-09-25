@@ -7,12 +7,14 @@
 namespace LTS {
 namespace image {
 
+
 // Returns an image with vertical lines.
 //
 // [DEV_NOTES]
 //  - Would like to return a more defined data type.
 //  - Allow specifying the image size.
-std::unique_ptr<uint8_t[]> linear_lines();
+std::unique_ptr<uint8_t[]> vertical_lines(size_t width, size_t height);
+
 
 }
 }
