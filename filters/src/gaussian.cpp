@@ -25,15 +25,15 @@ GaussianKernel::GaussianKernel() : norm_factor{11.0f}, size{3} //: _kernel(new c
 }
 
 
-void GaussianKernel::process(const uint8_t* input, size_t width, size_t height, uint8_t* output)
+void GaussianKernel::process(const uint8_t* input, size_t width, size_t height, uint8_t* output, int channels)
 {
     for (size_t x = 0; x < width; ++x) {
         for (size_t y = 0; y < height; ++y) {
-            float new_pixel{};
+            float new_pixel[channels];
+            std::fill_n(new_pixel, channels, 0);
 
             for (int ky = 0; ky < size; ++ky) {
                 for (int kx = 0; kx < size; ++kx) {
-                    //auto kc = kernel[ky*width + kx];
                     auto kc = kernel[ky][kx];
 
                     int input_x = static_cast<int>(x - size / 2 + kx);
@@ -49,13 +49,17 @@ void GaussianKernel::process(const uint8_t* input, size_t width, size_t height, 
                     else if (input_y >= height)
                         input_y = height - 1;
 
-                    auto input_pixel = input[input_y*width + input_x];
+                    auto input_pixel = &input[input_y*width*channels + input_x*channels];
 
-                    new_pixel += kc * input_pixel;
+                    for (int i = 0; i < channels; ++i) {
+                        new_pixel[i] += kc * (*(input_pixel + i));
+                    }
                 }
             }
 
-            output[y*width + x] = static_cast<uint8_t>(new_pixel / norm_factor);
+            for (int i = 0; i < channels; ++i) {
+                output[y*width*channels + x*channels + i] = static_cast<uint8_t>(new_pixel[i] / norm_factor);
+            }
         }
     }
 }

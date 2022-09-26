@@ -13,7 +13,7 @@ namespace image {
 // [DEV_NOTES]
 //  - Would like to return a more defined data type.
 //  - Allow specifying the image size.
-std::unique_ptr<uint8_t[]> vertical_lines(size_t width, size_t height);
+std::unique_ptr<uint8_t[]> vertical_lines(size_t width, size_t height, int channels);
 
 
 }
