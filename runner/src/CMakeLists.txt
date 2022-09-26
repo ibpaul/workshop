@@ -1,5 +1,6 @@
 include_directories(${Workshop_SOURCE_DIR}/filters/include)
 include_directories(${Workshop_SOURCE_DIR}/image/include)
+include_directories(${Workshop_SOURCE_DIR}/utils/include)
 add_executable(runner main.cpp)
 
 # Would like to wrap our libraries so we don't have to reference these third-party libraries.

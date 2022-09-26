@@ -1,11 +1,17 @@
 #include <iostream>
+#include <string>
 #include <chrono>
 #include "gaussian.h"
 #include "basic.h"
 #include "TestImages.h"
 
 #include "CImg.h"
+#include "File.h"
+
 using namespace cimg_library;
+
+
+constexpr char TimeReportFile[] = "time-report.txt";
 
 
 void process_cimg_image(const CImg<uint8_t>& input, uint8_t* output)
@@ -27,8 +33,21 @@ int main()
 
     auto begin = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < 100; ++i)
+    LTS::utils::File timeReportFile(TimeReportFile, "w");
+
+    fprintf(timeReportFile(), "IndividualRunTimes\n");
+
+    for (int i = 0; i < 100; ++i) {
+        auto sub_begin = std::chrono::high_resolution_clock::now();
+
         filter.process(image.data(), image.width(), image.height(), output.data(), image.spectrum());
+
+        auto sub_end = std::chrono::high_resolution_clock::now();
+        auto sub_diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(sub_end - sub_begin).count()) / 1000.0;
+
+        fprintf(timeReportFile(), "%f ms\n", sub_diff);
+    }
+
 
     auto end = std::chrono::high_resolution_clock::now();
     auto diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000.0 / 100.0;
