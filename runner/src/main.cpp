@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "gaussian.h"
 #include "basic.h"
 #include "TestImages.h"
@@ -23,7 +24,16 @@ int main()
     CImg<unsigned char> output(image.width(), image.height(), image.depth(), image.spectrum());
 
     LTS::filters::GaussianKernel filter;
-    filter.process(image.data(), image.width(), image.height(), output.data(), image.spectrum());
+
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < 100; ++i)
+        filter.process(image.data(), image.width(), image.height(), output.data(), image.spectrum());
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000.0 / 100.0;
+
+    std::cout << "total time (ms): " << diff << std::endl;
 
     output.save("output.png");
 
