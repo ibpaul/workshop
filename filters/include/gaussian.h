@@ -22,9 +22,14 @@ class GaussianKernel {
 public:
     GaussianKernel();
 
+    // Runs the Gaussian filter over the input image and places result into output.
+    void process(const uint8_t* input, size_t width, size_t height, uint8_t* output);
+
 private:
     //std::unique_ptr<char[3][3]> _kernel;
-    float _kernel[3][3];
+    float kernel[3][3];
+    float norm_factor;
+    size_t size;
 };
 
 }
