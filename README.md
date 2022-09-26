@@ -4,8 +4,9 @@ Tools for developing algorithms.
 ## Build and Run
 The project can be built and run with the following environments.
 
- - Visual Studio 2022
- - CLion 2022.2.3
+ - Windows - Visual Studio 2022
+ - Windows - CLion 2022.2.3
+ - Ubuntu 22.04 LTS
 
 ### Visual Studio
 
@@ -33,3 +34,21 @@ cmake .
 2. From the *Configuration* drop-down, select *runner*.
 
 3. Click the *Run* button.
+
+
+### Ubuntu
+
+1. Install tools and libraries.
+> `sudo apt install cmake build-essential zlib1g-dev libx11-dev
+
+2. Copy the file *libs/libpng/scripts/pnglibconf.h.prebuilt* to *libs/libpng/pngligconf.h*.
+
+3. Delete the file *FindZLIB.cmake*.
+
+4. Run the cmake commands to build.
+```
+cmake .
+cmake --build .
+```
+
+5. Run the program by executing `runner/src/runner`.
