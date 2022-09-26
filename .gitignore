@@ -14,6 +14,7 @@
 **/.ninja_log
 **/build.ninja
 /cmake-build-debug
+**/Makefile
 
 # Ignore generated output from compiling third-party libraries.
 /libs

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.22.1)
 project(Workshop)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -11,7 +11,9 @@ add_subdirectory(filters)
 add_subdirectory(runner)
 add_subdirectory(image)
 add_subdirectory(libs/libpng)
-add_subdirectory(libs/zlib)
+if (WIN32)
+    add_subdirectory(libs/zlib)
+endif (WIN32)
 
 ## Google Testing #############################################################
 include(FetchContent)
