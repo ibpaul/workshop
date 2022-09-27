@@ -10,15 +10,9 @@ if (NOT UNIX)
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_MODULE_PATH})
 endif()
 
-if (UNIX)
-    # Need to copy this file for some reason. libpng header documentation said to copy
-    # this file from here if it doesn't already exist.
-    configure_file(
-        libs/libpng/scripts/pnglibconf.h.prebuilt
-        libs/libpng/pnglibconf.h
-        COPYONLY
-    )
-endif()
+# Need to copy this file for some reason. libpng header documentation said to copy
+# this file from here if it doesn't already exist.
+file(COPY_FILE libs/libpng/scripts/pnglibconf.h.prebuilt libs/libpng/pnglibconf.h)
 
 add_definitions(-Dcimg_use_png)
 
