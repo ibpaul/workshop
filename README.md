@@ -45,12 +45,11 @@ sudo apt install cmake build-essential zlib1g-dev libx11-dev
 
 2. Copy the file *libs/libpng/scripts/pnglibconf.h.prebuilt* to *libs/libpng/pngligconf.h*.
 
-3. Delete the file *FindZLIB.cmake*.
-
-4. Run the cmake commands to build.
+3. Run the cmake commands to build.
 ```
 cmake .
 cmake --build .
 ```
 
-5. Run the program by executing `runner/src/runner`.
+4. Run the program by executing `runner/src/runner`.
+

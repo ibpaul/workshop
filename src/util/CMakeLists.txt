@@ -7,14 +7,14 @@ add_library(utils
 ## Unit Test Setup ############################################################
 
 add_executable(
-    utils_test
+    util_test
     statistics_test.cpp
 )
 
 target_link_libraries(
-    utils_test
+    util_test
     GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(utils_test)
+gtest_discover_tests(util_test)

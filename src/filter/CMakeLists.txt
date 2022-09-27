@@ -1,7 +1,7 @@
 include_directories(${Workshop_SOURCE_DIR}/include)
 
 add_library(
-    filters
+    filter
     gaussian.cpp
 )
 
@@ -10,16 +10,16 @@ add_library(
 #include_directories(${Workshop_SOURCE_DIR}/image/include)
 
 add_executable(
-    filters_test
+    filter_test
     Gaussian_test.cpp
 )
 
 target_link_libraries(
-    filters_test
+    filter_test
     GTest::gtest_main
-    filters
+    filter
     image
 )
 
 include(GoogleTest)
-gtest_discover_tests(filters_test)
+gtest_discover_tests(filter_test)

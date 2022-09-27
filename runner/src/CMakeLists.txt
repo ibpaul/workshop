@@ -1,5 +1,3 @@
-include_directories(${Workshop_SOURCE_DIR}/filters/include)
-include_directories(${Workshop_SOURCE_DIR}/image/include)
 include_directories(${Workshop_SOURCE_DIR}/include)
 add_executable(runner main.cpp)
 
@@ -9,10 +7,10 @@ include_directories(${Workshop_SOURCE_DIR}/libs/libpng)
 
 
 if (WIN32)
-    target_link_libraries(runner PUBLIC filters image utils png_static zlibstatic)
+    target_link_libraries(runner PUBLIC filter image utils png_static zlibstatic)
 else()
-    target_link_libraries(runner PUBLIC filters image utils png_static X11)
-endif (WIN32)
+    target_link_libraries(runner PUBLIC filter image utils png_static X11)
+endif()
 
 set_target_properties(
 	runner
