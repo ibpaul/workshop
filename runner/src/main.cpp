@@ -1,17 +1,20 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <vector>
+
+#include "CImg.h"
+using namespace cimg_library;
+
+#include "File.h"
+#include "statistics.h"
 #include "gaussian.h"
 #include "basic.h"
 #include "TestImages.h"
 
-#include "CImg.h"
-#include "File.h"
-
-using namespace cimg_library;
-
 
 constexpr char TimeReportFile[] = "time-report.txt";
+constexpr size_t NumOfRuns = 100;
 
 
 void process_cimg_image(const CImg<uint8_t>& input, uint8_t* output)
@@ -31,28 +34,25 @@ int main()
 
     LTS::filters::GaussianKernel filter;
 
-    auto begin = std::chrono::high_resolution_clock::now();
-
     LTS::utils::File timeReportFile(TimeReportFile, "w");
-
     fprintf(timeReportFile(), "IndividualRunTimes\n");
 
-    for (int i = 0; i < 100; ++i) {
-        auto sub_begin = std::chrono::high_resolution_clock::now();
+    std::vector<double> durations(100);
+    
+    for (int i = 0; i < NumOfRuns; ++i) {
+        auto begin = std::chrono::high_resolution_clock::now();
 
         filter.process(image.data(), image.width(), image.height(), output.data(), image.spectrum());
 
-        auto sub_end = std::chrono::high_resolution_clock::now();
-        auto sub_diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(sub_end - sub_begin).count()) / 1000.0;
+        auto end = std::chrono::high_resolution_clock::now();
+        auto diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000.0;
 
-        fprintf(timeReportFile(), "%f ms\n", sub_diff);
+        durations[i] = diff;
+        fprintf(timeReportFile(), "%f ms\n", diff);
     }
 
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000.0 / 100.0;
-
-    std::cout << "total time (ms): " << diff << std::endl;
+    std::cout << "mean time (ms): " << LTS::utils::mean(durations) << std::endl;
+    std::cout << "jitter (std dev): " << LTS::utils::standard_deviation(durations) << std::endl;
 
     output.save("output.png");
 

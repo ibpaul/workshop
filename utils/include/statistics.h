@@ -19,7 +19,7 @@ namespace utils {
 template<typename Container>
 typename Container::value_type mean(Container vals)
 {
-    return std::accumulate(vals.begin(), vals.end(), 0) / vals.size();
+    return std::accumulate(vals.begin(), vals.end(), static_cast<typename Container::value_type>(0)) / vals.size();
 }
 
 
