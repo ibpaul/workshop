@@ -7,7 +7,7 @@
 #include <stdexcept>
 
 namespace LTS {
-namespace utils {
+namespace util {
 
 
 class File {

@@ -9,7 +9,7 @@
 #include <chrono>
 
 namespace LTS {
-namespace utils {
+namespace util {
 
 
 class PerformanceTest

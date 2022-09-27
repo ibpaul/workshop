@@ -1,11 +1,11 @@
-#include "utils/PerformanceTest.h"
+#include "util/PerformanceTest.h"
 #include <utility>
 #include <chrono>
-#include "utils/File.h"
-#include "utils/statistics.h"
+#include "util/File.h"
+#include "util/statistics.h"
 
 namespace LTS {
-namespace utils {
+namespace util {
 
 
 PerformanceTest::PerformanceTest(size_t iterations, std::string report_file, bool display)
@@ -60,8 +60,8 @@ void PerformanceTest::print_test_statistics(double total_test_time_ms)
         *_displayStream <<
             "[Test Results]" << std::endl <<
             "total test time (ms): " << total_test_time_ms << std::endl <<
-            "mean time (ms): " << LTS::utils::mean(_durations) << std::endl <<
-            "jitter (std dev): " << LTS::utils::standard_deviation(_durations) << std::endl;
+            "mean time (ms): " << LTS::util::mean(_durations) << std::endl <<
+            "jitter (std dev): " << LTS::util::standard_deviation(_durations) << std::endl;
     }
 }
 
@@ -70,7 +70,7 @@ void PerformanceTest::save_report_file()
     if (_reportFile.empty())
         return;
 
-    LTS::utils::File timeReportFile(_reportFile, "w");
+    LTS::util::File timeReportFile(_reportFile, "w");
     fprintf(timeReportFile(), "IndividualRunTimes\n");
 
     for (auto& d : _durations)

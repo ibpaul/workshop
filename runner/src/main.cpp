@@ -3,7 +3,7 @@
 #include "CImg.h"
 using namespace cimg_library;
 #include "filter/gaussian.h"
-#include "utils/PerformanceTest.h"
+#include "util/PerformanceTest.h"
 
 
 constexpr char TimeReportFile[] = "time-report.txt";
@@ -15,7 +15,7 @@ int main()
     CImg<unsigned char> image("data/peppers.png");
     CImg<unsigned char> output(image.width(), image.height(), image.depth(), image.spectrum());
 
-    LTS::utils::PerformanceTest pt {NumOfRuns, TimeReportFile};
+    LTS::util::PerformanceTest pt {NumOfRuns, TimeReportFile};
 
     LTS::filters::GaussianKernel filter;
 
