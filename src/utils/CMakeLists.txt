@@ -1,15 +1,14 @@
-include_directories(${Workshop_SOURCE_DIR}/utils/include)
+include_directories(../../include)
 
 add_library(utils
-    src/PerformanceTest.cpp
+    PerformanceTest.cpp
 )
 
 ## Unit Test Setup ############################################################
-include_directories(${Workshop_SOURCE_DIR}/utils/include)
 
 add_executable(
     utils_test
-    src/statistics_test.cpp
+    statistics_test.cpp
 )
 
 target_link_libraries(

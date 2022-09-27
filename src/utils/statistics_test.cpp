@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "statistics.h"
+#include "utils/statistics.h"
 
 
 TEST(UTILS_TEST, StatisticsMean1) {

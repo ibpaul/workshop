@@ -3,7 +3,7 @@
 #include "CImg.h"
 using namespace cimg_library;
 #include "gaussian.h"
-#include "PerformanceTest.h"
+#include "utils/PerformanceTest.h"
 
 
 constexpr char TimeReportFile[] = "time-report.txt";
