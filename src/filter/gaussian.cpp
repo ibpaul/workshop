@@ -1,4 +1,4 @@
-#include "gaussian.h"
+#include "filter/gaussian.h"
 
 
 int test_func()

@@ -2,7 +2,7 @@
 #include <chrono>
 #include "CImg.h"
 using namespace cimg_library;
-#include "gaussian.h"
+#include "filter/gaussian.h"
 #include "utils/PerformanceTest.h"
 
 

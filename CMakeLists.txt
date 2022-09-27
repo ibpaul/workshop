@@ -9,10 +9,10 @@ add_definitions(-Dcimg_use_png)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_subdirectory(filters)
-add_subdirectory(runner)
+add_subdirectory(src/filter)
 add_subdirectory(src/image)
 add_subdirectory(src/utils)
+add_subdirectory(runner)
 add_subdirectory(libs/libpng)
 if (WIN32)
     add_subdirectory(libs/zlib)
