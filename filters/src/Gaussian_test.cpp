@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "TestImages.h"
+#include "image/TestImages.h"
 #include "Gaussian.h"
 
 

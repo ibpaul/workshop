@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "TestImages.h"
+#include "image/TestImages.h"
 
 
 TEST(IMAGE_TEST, Generate10x10LinearTestImage) {

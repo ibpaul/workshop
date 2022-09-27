@@ -1,4 +1,4 @@
-#include "TestImages.h"
+#include "image/TestImages.h"
 
 namespace LTS {
 namespace image {
