@@ -44,6 +44,8 @@ public:
     {
         print_test_start();
 
+        auto begin_test = std::chrono::high_resolution_clock::now();
+
         for (auto test_num = 0; test_num < _iterations; ++test_num) {
             auto begin = std::chrono::high_resolution_clock::now();
 
@@ -55,8 +57,11 @@ public:
             _durations[test_num] = diff;
         }
 
+        auto end_test = std::chrono::high_resolution_clock::now();
+        auto diff_test = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end_test - begin_test).count()) / 1000.0;
+
         print_test_end();
-        print_test_statistics();
+        print_test_statistics(diff_test);
         save_report_file();
     }
 
@@ -69,7 +74,7 @@ public:
 private:
     void print_test_start();
     void print_test_end();
-    void print_test_statistics();
+    void print_test_statistics(double total_test_time_ms);
     void save_report_file();
 
 private:

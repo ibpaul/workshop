@@ -54,12 +54,14 @@ void PerformanceTest::print_test_end()
     }
 }
 
-void PerformanceTest::print_test_statistics()
+void PerformanceTest::print_test_statistics(double total_test_time_ms)
 {
     if (_display) {
-        *_displayStream << "[Test Results]" << std::endl;
-        *_displayStream << "mean time (ms): " << LTS::utils::mean(_durations) << std::endl;
-        *_displayStream << "jitter (std dev): " << LTS::utils::standard_deviation(_durations) << std::endl;
+        *_displayStream <<
+            "[Test Results]" << std::endl <<
+            "total test time (ms): " << total_test_time_ms << std::endl <<
+            "mean time (ms): " << LTS::utils::mean(_durations) << std::endl <<
+            "jitter (std dev): " << LTS::utils::standard_deviation(_durations) << std::endl;
     }
 }
 
