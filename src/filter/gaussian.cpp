@@ -29,8 +29,9 @@ void GaussianKernel::process(const uint8_t* input, size_t width, size_t height, 
 {
     for (size_t x = 0; x < width; ++x) {
         for (size_t y = 0; y < height; ++y) {
-            float new_pixel[channels];
-            std::fill_n(new_pixel, channels, 0);
+
+            std::unique_ptr<float[]> new_pixel { new float[channels] };
+            std::fill_n(new_pixel.get(), channels, static_cast<float>(0.0f));
 
             for (int ky = 0; ky < size; ++ky) {
                 for (int kx = 0; kx < size; ++kx) {
