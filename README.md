@@ -39,7 +39,9 @@ cmake .
 ### Ubuntu
 
 1. Install tools and libraries.
-> `sudo apt install cmake build-essential zlib1g-dev libx11-dev
+```
+sudo apt install cmake build-essential zlib1g-dev libx11-dev
+```
 
 2. Copy the file *libs/libpng/scripts/pnglibconf.h.prebuilt* to *libs/libpng/pngligconf.h*.
 
