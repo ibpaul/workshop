@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "image/TestImages.h"
-#include "filter/Gaussian.h"
+#include "filter/gaussian.h"
 
 
 TEST(GAUSSIAN_TEST, GaussianFilterOn10x10MonochromeVerticalLinesImage) {
