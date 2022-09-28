@@ -1,8 +1,11 @@
 # Workshop
-Tools for developing algorithms.
+Tools for developing signal processing algorithms and evaluating their performance.
 
-## Build and Run
-The project can be built and run with the following environments.
+ - *runner* - Command-line utility for performance timing.
+ - *workshop* - GUI for performance timing.
+
+## runner - Build and Run
+The *runner* tool can be built and run with the following environments.
 
  - Windows - Visual Studio 2022
  - Windows - CLion 2022.2.3
@@ -51,3 +54,16 @@ cmake --build .
 
 3. Run the program by executing `runner/src/runner`.
 
+
+## workshop - Build and Run
+The *workshop* GUI can be built for the following environments.
+
+- Windows with Qt Creator
+
+### Windows with Qt Creator
+
+1. Open *Qt Creator* and then open the */workshop/CMakeLists.txt* file.
+
+2. From the menu, click *Build -> Build All Projects*.
+
+3. Run the program from the menu item *Debug -> Start Debugging -> Start Debugging of Startup Project*.
