@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <thread>
+#include <functional>
 
 namespace LTS {
 namespace util {
@@ -15,8 +17,6 @@ namespace util {
 class PerformanceTest
 {
 public:
-    using TestFunc = void (*)();
-
     // Constructs a new performance test setup.
     //
     // [parameters]
@@ -31,39 +31,22 @@ public:
     // Performs the performance test.
     //
     // [parameters]
-    // under_test - Function which will have its performance tested.
+    // test_func - Function which will have its performance tested.
     //
-    // [DEV_NOTES]
-    // The test function was templated to allow passing capturing lambdas. This probably uses std::function to pass
-    // as a function argument which is characteristically bloated and may degrade true timing testing but is assumed
-    // to be insignificant while working on computationally intensive algorithms. Watch out for time testing on smaller
-    // and simpler algorithms.
-    //void test(TestFunc test_func);
-    template<typename Callable>
-    void test(Callable test_func)
-    {
-        print_test_start();
+    // [notes]
+    // Using std::function as the parameter type so that our method can use capturing lambdas.
+    void test(std::function<void()> test_func);
 
-        auto begin_test = std::chrono::high_resolution_clock::now();
-
-        for (auto test_num = 0; test_num < _iterations; ++test_num) {
-            auto begin = std::chrono::high_resolution_clock::now();
-
-            test_func();
-
-            auto end = std::chrono::high_resolution_clock::now();
-            auto diff = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) / 1000.0;
-
-            _durations[test_num] = diff;
-        }
-
-        auto end_test = std::chrono::high_resolution_clock::now();
-        auto diff_test = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(end_test - begin_test).count()) / 1000.0;
-
-        print_test_end();
-        print_test_statistics(diff_test);
-        save_report_file();
-    }
+    // Performs a threaded performance test.
+    //
+    // [parameters]
+    // test_funcs - Collection of functions to be run on separate threads. Caller's responsibility the individual
+    //     functions provided do not share data incorrectly between the individual functions provided.
+    //
+    // [notes]
+    //  - Each function will be called the number of times provided in 'iterations' when this class' constructor was
+    //    called (e.g. 4 test funcs provided with 100 iterations -> 400 total function calls).
+    void test_threaded(std::vector<std::function<void()>> test_funcs);
 
     // Sets the stream to write display information to during the test.
     //
@@ -76,6 +59,15 @@ private:
     void print_test_end();
     void print_test_statistics(double total_test_time_ms);
     void save_report_file();
+
+    struct TestHelper {
+        std::function<void()> _test_func;
+        size_t _iterations;
+        std::vector<float> _durations;
+
+        TestHelper(size_t iterations, std::function<void()> test_func);
+        void operator()();
+    };
 
 private:
     size_t _iterations;
