@@ -10,12 +10,14 @@ The project can be built and run with the following environments.
 
 ### Visual Studio
 
-1. Run the *cmake* command to generate project files.
+1. Create a directory inside the project called *build* and make the Visual Studio project files in that directory.
 ```
-cmake .
+mkdir build
+cd build
+cmake ..
 ```
 
-2. Open the generated Visual Studio solution located at *\<repo\>/Workshop.sln*.
+2. Open the generated Visual Studio solution located at */bulid/Workshop.sln*.
 
 3. Add library link references to the *png* project.
     - Right-click the *png* project and select *Properties...*.

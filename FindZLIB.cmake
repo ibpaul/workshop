@@ -1,5 +1,8 @@
 set(ZLIB_LIBRARY "${CMAKE_SOURCE_DIR}/libs/zlib")
-set(ZLIB_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/libs/zlib")
+set(ZLIB_INCLUDE_DIRS
+	"${CMAKE_SOURCE_DIR}/libs/zlib"
+	"${CMAKE_BINARY_DIR}/libs/zlib"
+)
 
 # Defines for Visual Studio environment.
 set(ZLIB_LIBRARY_DEBUG "${CMAKE_SOURCE_DIR}/libs/zlib/Debug")
