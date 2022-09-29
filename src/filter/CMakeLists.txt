@@ -1,7 +1,7 @@
 include_directories(${Workshop_SOURCE_DIR}/include)
 
 add_library(
-    filter
+    lts_filter
     gaussian.cpp
 )
 
@@ -17,7 +17,7 @@ add_executable(
 target_link_libraries(
     filter_test
     GTest::gtest_main
-    filter
+    lts_filter
     image
 )
 
