@@ -26,16 +26,22 @@ cmake ..
     - Expand the group *Configuration Properties -> Linker -> Input*. 
     - For the setting *Additional Dependencies*, add *zlibd.lib*.
 
-4. Build and run the *runner* project by right-clicking it and selecting *Debug -> Start New Instance*.
+4. Build and run the *filter* project by right-clicking it and selecting *Debug -> Start New Instance*.
 
 
 ### CLion
 
 1. Open the project top-level folder in *CLion*.
 
-2. From the *Configuration* drop-down, select *runner*.
+2. From the *Configuration* drop-down, select *filter*.
 
-3. Click the *Run* button.
+3. Edit program arguments by selecting *Edit Configurations* from the drop-down. Add the
+   arguments to the *Program arguments* field:
+```
+--type gaussian{10,10} data/peppers.png output.png
+```
+
+4. Save settings and click the *Run* button.
 
 
 ### Ubuntu
@@ -47,9 +53,15 @@ sudo apt install cmake build-essential zlib1g-dev libx11-dev
 
 2. Run the cmake commands to build.
 ```
-cmake .
+mkdir build
+cd build
+cmake ..
 cmake --build .
 ```
 
-3. Run the program by executing `runner/src/runner`.
+3. Change to the top-level directory and run the program.
+```
+cd ..
+build/tools/filter/filter --type=gaussian{10,10} data/peppers.png output.png
+```
 
