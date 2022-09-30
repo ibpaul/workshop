@@ -28,7 +28,7 @@ Options process_options(
     cxxopts::ParseResult& result,
     cxxopts::Options& options)
 {
-    Options opts;
+    Options opts {};
 
     if (result.count("help")) {
         cout << options.help() << endl;
