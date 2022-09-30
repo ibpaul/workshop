@@ -17,6 +17,7 @@ using LTS::util::PerformanceTest;
 
 
 unique_ptr<Image> load_image(const string& file_name);
+void save_image(const Image& image, const string& file_name);
 void perform_test(const function<void()>& test_func, const Options& options);
 
 
@@ -39,14 +40,8 @@ int main(int argc, char* argv[])
         test_func();
     }
 
-    if (!opts.output_file.empty()) {
-        try {
-            output.save(opts.output_file.c_str());
-        } catch (...) {
-            cout << "Unable to save filtered output to file '" << opts.output_file << "'." << endl;
-            exit(1);
-        }
-    }
+    if (!opts.output_file.empty())
+        save_image(output, opts.output_file);
 }
 
 
@@ -54,8 +49,25 @@ unique_ptr<Image> load_image(const string& file_name)
 {
     try {
         return make_unique<Image>(file_name.c_str());
-    } catch (...) {
+    } catch (CImgIOException&) {
         cerr << "Unable to open file '" << file_name << "'." << endl;
+        exit(1);
+    } catch (...) {
+        cerr << "Unknown error occurred opening file '" << file_name << "'." << endl;
+        exit(1);
+    }
+}
+
+
+void save_image(const Image& image, const string& file_name)
+{
+    try {
+        image.save(file_name.c_str());
+    } catch (CImgIOException&) {
+        cout << "Unable to save filtered output to file '" << file_name << "'." << endl;
+        exit(1);
+    } catch (...) {
+        cout << "Unexpected error occurred." << endl;
         exit(1);
     }
 }
