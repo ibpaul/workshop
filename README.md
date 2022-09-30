@@ -70,6 +70,20 @@ The default build environment creates *debug* executables which will not run as
 fast as full *release* builds, so it is import when running performance timing tests
 to compile as *release*.
 
+### Visual Studio 
+The steps are the same as in *Quick Build and Run* but with the adjustments below.
+
+- With *Visual Studio* open, select the option *Release* from toolbar drop-down.
+
+- The associated linker options will be as below instead.
+  - `<repo_full_path>/build/libs/zlib/Release`
+  - `zlib.lib`
+
+- When you run the program with performance time testing, make sure you run the
+  project without the attached debugger as this typically slows the program down
+  by up to 5x. To do this, right-click on the *filter* project and select
+  *Debug -> Start Without Debugging*.
+
 ### CLion
 The steps are the same as in *Quick Build and Run* but with the adjustments below.
 
