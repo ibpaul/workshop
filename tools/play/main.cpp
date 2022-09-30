@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
             main_disp.wait();
         }
     } catch (...) {
-        std::cerr << "Unable to open file '" << filename << "'." << endl;
+        cerr << "Unable to open file '" << filename << "'." << endl;
+        return 1;
     }
 }

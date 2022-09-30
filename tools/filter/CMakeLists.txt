@@ -1,4 +1,5 @@
 include_directories(${Workshop_SOURCE_DIR}/include)
+include_directories(${Workshop_SOURCE_DIR}/libs/cxxopts)
 
 add_executable(
 	filter
