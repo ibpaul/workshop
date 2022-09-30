@@ -1,8 +1,11 @@
 #include "util/PerformanceTest.h"
 #include <utility>
 #include <chrono>
+#include <string>
 #include "util/File.h"
 #include "util/statistics.h"
+
+using namespace std;
 
 namespace LTS {
 namespace util {
@@ -98,11 +101,15 @@ void PerformanceTest::print_test_end()
 void PerformanceTest::print_test_statistics(double total_test_time_ms)
 {
     if (_display) {
+        string jitter {"n/a"};
+        if (_durations.size() > 1)
+            jitter = to_string(LTS::util::standard_deviation(_durations));
+
         *_displayStream <<
             "[Test Results]" << std::endl <<
             "total test time (ms): " << total_test_time_ms << std::endl <<
             "mean time (ms): " << LTS::util::mean(_durations) << std::endl <<
-            "jitter (std dev): " << LTS::util::standard_deviation(_durations) << std::endl;
+            "jitter (std dev): " << jitter << std::endl;
     }
 }
 
