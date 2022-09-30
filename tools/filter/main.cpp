@@ -5,9 +5,9 @@
 // Hide error message reporting from CImg.
 #define cimg_verbosity 0
 #include "CImg.h"
-#include "cxxopts.hpp"
 #include "filter/gaussian.h"
 #include "util/PerformanceTest.h"
+#include "options.h"
 
 using namespace std;
 using namespace cimg_library;
@@ -21,59 +21,25 @@ constexpr size_t NumOfRuns = 100;
 #endif
 
 
-cxxopts::Options program_options()
-{
-    cxxopts::Options options("filter", "Process input files with specified filter.");
-
-    options.add_options()
-        ("input", "The input file to run through the filter.", cxxopts::value<string>())
-        ("output", "The output file to save the filtered data to.", cxxopts::value<string>())
-        ("t,test", "Perform timing test on algorithm")
-        ("r,report", "Test report output file.", cxxopts::value<string>())
-        ("h,help", "Print usage.");
-
-    options.parse_positional({"input", "output"});
-
-    options
-        .positional_help("input")
-        .show_positional_help();
-
-    return options;
-}
-
-
 int main(int argc, char* argv[])
 {
-    auto options =program_options();
-    auto result = options.parse(argc, argv);
-
-    if (result.count("help")) {
-        cout << options.help() << endl;
-        exit(0);
-    }
-
-    if (!result.count("input")) {
-        cout << "input file not provided" << endl;
-        exit(1);
-    }
-    string filename {result["input"].as<string>()};
-
-    string reportFile {};
-    if (result.count("report")) {
-        reportFile = result["report"].as<string>();
-    }
+    auto opts = process_all_options(argc, argv);
 
     try {
-        CImg<unsigned char> image(filename.c_str());
+        CImg<unsigned char> image(opts.input_file.c_str());
         CImg<unsigned char> output(image.width(), image.height(), image.depth(), image.spectrum());
 
-        LTS::util::PerformanceTest pt {NumOfRuns, reportFile};
+        //unique_ptr<LTS::util::PerformanceTest> pt;
+
+        LTS::util::PerformanceTest pt {NumOfRuns, opts.report_file};
 
         LTS::filters::GaussianKernel filter;
 
         function<void()> test_func = ([&](){
             filter.process(image.data(), image.width(), image.height(), output.data(), image.spectrum());
         });
+
+
 
         #if MULTI_THREADED
         vector<function<void()>> test_funcs;
@@ -86,12 +52,12 @@ int main(int argc, char* argv[])
         pt.test(test_func);
         #endif
 
-        if (result.count("output")) {
-            output.save(result["output"].as<string>().c_str());
+        if (!opts.output_file.empty()) {
+            output.save(opts.output_file.c_str());
         }
 
     } catch (...) {
-        cerr << "Unable to open file '" << filename << "'." << endl;
+        cerr << "Unable to open file '" << opts.input_file << "'." << endl;
         return 1;
     }
 

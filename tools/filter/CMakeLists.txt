@@ -4,6 +4,7 @@ include_directories(${Workshop_SOURCE_DIR}/libs/cxxopts)
 add_executable(
 	filter
 	main.cpp
+	options.cpp
 )
 
 # Would like to wrap our libraries so we don't have to reference these third-party libraries.
