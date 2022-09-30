@@ -14,7 +14,7 @@ struct Options {
     int num_test_cycles {1};
     int num_test_threads {1};
     std::string filter;
-    bool have_filter_params;
+    int num_filter_params_provided {0};
     int filter_param_0_int {0};
     int filter_param_1_int {0};
 };

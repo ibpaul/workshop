@@ -6,7 +6,7 @@
 #include "versions/gaussian_v1.h"
 
 namespace LTS {
-namespace filters {
+namespace filter {
 
 using GaussianKernel = versions::GaussianKernel_v1;
 

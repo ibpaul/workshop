@@ -3,10 +3,11 @@
 #define LTS_FILTERS_VERSIONS_GAUSSIAN_V1_H
 
 #include <memory>
+#include "filter/ImageKernel.h"
 
 
 namespace LTS {
-namespace filters {
+namespace filter {
 namespace versions {
 
 // Gaussian (blur) filter for images.
@@ -19,7 +20,7 @@ namespace versions {
 //  - Would like to make a base class called Kernel.
 //  - Make into template for different parameter types.
 //  - Only makes a simple 3x3 kernel for now.
-class GaussianKernel_v1 {
+class GaussianKernel_v1 : public ImageKernel {
 
 public:
     GaussianKernel_v1();

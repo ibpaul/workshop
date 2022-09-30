@@ -43,5 +43,11 @@ vector<string> split(const string& str, const vector<char>& delims)
 }
 
 
+bool starts_with(const std::string& str, const std::string& check)
+{
+    return str.rfind(check, 0) == 0;
+}
+
+
 }
 }

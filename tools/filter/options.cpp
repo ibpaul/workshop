@@ -62,8 +62,6 @@ Options process_options(
     if (result.count("test"))
         process_test_options(result, opts);
 
-
-
     assert(opts.num_test_threads > 0);
     assert(opts.num_test_cycles > 0);
     assert(!opts.filter.empty());
@@ -94,12 +92,13 @@ void process_type_options(cxxopts::ParseResult& result, Options& opts)
 
     // NOTE: Need a better way to extract filter parameters.
     if (!vals.empty()) {
-        opts.have_filter_params = true;
+        opts.num_filter_params_provided++;
         opts.filter_param_0_int = stoi(vals.front());
         vals.pop();
     }
 
     if (!vals.empty()) {
+        opts.num_filter_params_provided++;
         opts.filter_param_1_int = stoi(vals.front());
         vals.pop();
     }

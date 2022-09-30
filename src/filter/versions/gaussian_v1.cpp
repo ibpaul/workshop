@@ -2,7 +2,7 @@
 
 
 namespace LTS {
-namespace filters {
+namespace filter {
 namespace versions {
 
 
