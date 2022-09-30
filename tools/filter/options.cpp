@@ -1,5 +1,7 @@
 #include "options.h"
+#include <cassert>
 #include "cxxopts.hpp"
+#include "util/string.h"
 using namespace std;
 
 
@@ -53,11 +55,34 @@ Options process_options(
         opts.test = true;
 
         auto test_params_str = result["test"].as<string>();
+        auto params = LTS::util::split(test_params_str, ',');
 
+        if (!params.empty()) {
+            if (params.size() > 2) {
+                cout << "Invalid number of arguments for --test parameter." << endl;
+                exit(1);
+            }
 
+            try {
+                opts.num_test_cycles = stoi(params[0]);
+            } catch (...) {
+                cout << "Unable to parse --test parameters." << endl;
+                exit(1);
+            }
 
-        //cout << "test_params: " << test_params << endl;
+            if (params.size() > 1) {
+                try {
+                    opts.num_test_threads = stoi(params[1]);
+                } catch (...) {
+                    cout << "Unable to parse --test parameters." << endl;
+                    exit(1);
+                }
+            }
+        }
     }
+
+    assert(opts.num_test_threads > 0);
+    assert(opts.num_test_cycles > 0);
 
     return opts;
 }

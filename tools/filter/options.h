@@ -11,6 +11,8 @@ struct Options {
     std::string output_file;
     std::string report_file;
     bool test;
+    int num_test_cycles {1};
+    int num_test_threads {1};
 };
 
 // Process and determine all command-line options provided. Will call printer error and call exit() for invalid

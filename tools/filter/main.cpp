@@ -1,5 +1,4 @@
 #include <iostream>
-#include <chrono>
 #include <functional>
 #include <memory>
 
@@ -13,34 +12,20 @@
 using namespace std;
 using namespace cimg_library;
 
-#define MULTI_THREADED 1
-
-#if MULTI_THREADED
-constexpr size_t NumOfRuns = 25;
-#else
-constexpr size_t NumOfRuns = 100;
-#endif
-
 using Image = CImg<unsigned char>;
+using LTS::util::PerformanceTest;
+
+
+unique_ptr<Image> load_image(const string& file_name);
+void perform_test(const function<void()>& test_func, const Options& options);
 
 
 int main(int argc, char* argv[])
 {
     auto opts = process_all_options(argc, argv);
 
-    unique_ptr<Image> image;
-    try {
-        image = make_unique<Image>(opts.input_file.c_str());
-    } catch (...) {
-        cerr << "Unable to open file '" << opts.input_file << "'." << endl;
-        exit(1);
-    }
-
+    unique_ptr<Image> image {load_image(opts.input_file)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
-
-    //unique_ptr<LTS::util::PerformanceTest> pt;
-
-    LTS::util::PerformanceTest pt {NumOfRuns, opts.report_file};
 
     LTS::filters::GaussianKernel filter;
 
@@ -48,20 +33,47 @@ int main(int argc, char* argv[])
         filter.process(image->data(), image->width(), image->height(), output.data(), image->spectrum());
     });
 
-
-
-    #if MULTI_THREADED
-    vector<function<void()>> test_funcs;
-    test_funcs.push_back(test_func);
-    test_funcs.push_back(test_func);
-    test_funcs.push_back(test_func);
-    test_funcs.push_back(test_func);
-    pt.test_threaded(test_funcs);
-    #else
-    pt.test(test_func);
-    #endif
+    if (opts.test) {
+        perform_test(test_func, opts);
+    } else {
+        test_func();
+    }
 
     if (!opts.output_file.empty()) {
-        output.save(opts.output_file.c_str());
+        try {
+            output.save(opts.output_file.c_str());
+        } catch (...) {
+            cout << "Unable to save filtered output to file '" << opts.output_file << "'." << endl;
+            exit(1);
+        }
+    }
+}
+
+
+unique_ptr<Image> load_image(const string& file_name)
+{
+    try {
+        return make_unique<Image>(file_name.c_str());
+    } catch (...) {
+        cerr << "Unable to open file '" << file_name << "'." << endl;
+        exit(1);
+    }
+}
+
+
+void perform_test(const function<void()>& test_func, const Options& options)
+{
+    auto pt = make_unique<PerformanceTest>(options.num_test_cycles, options.report_file);
+
+    if (options.num_test_threads == 1) {
+        pt->test(test_func);
+    } else if (options.num_test_threads > 1) {
+        vector<function<void()>> test_funcs;
+        for (int i = 0; i < options.num_test_threads; ++i)
+            test_funcs.push_back(test_func);
+        pt->test_threaded(test_funcs);
+    } else {
+        cout << "Unexpected error occurred." << endl;
+        exit(1);
     }
 }

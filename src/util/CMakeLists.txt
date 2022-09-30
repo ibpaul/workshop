@@ -2,6 +2,7 @@ include_directories(../../include)
 
 add_library(utils
     PerformanceTest.cpp
+    string.cpp
 )
 
 ## Unit Test Setup ############################################################
