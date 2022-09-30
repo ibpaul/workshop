@@ -19,5 +19,29 @@ vector<string> split(const string& str, char delim)
     return segments;
 }
 
+
+vector<string> split(const string& str, const vector<char>& delims)
+{
+    vector<string> segments;
+    string delims_str;
+
+    for (char c : delims)
+        delims_str += c;
+
+    size_t prev {0};
+    size_t pos;
+
+    while ((pos = str.find_first_of(delims_str, prev)) != string::npos) {
+        if (pos > prev)
+            segments.push_back(str.substr(prev, pos-prev));
+        prev = pos + 1;
+    }
+    if (prev < str.length())
+        segments.push_back(str.substr(prev, string::npos));
+
+    return segments;
+}
+
+
 }
 }

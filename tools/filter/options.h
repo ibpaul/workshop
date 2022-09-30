@@ -13,6 +13,10 @@ struct Options {
     bool test;
     int num_test_cycles {1};
     int num_test_threads {1};
+    std::string filter;
+    bool have_filter_params;
+    int filter_param_0_int {0};
+    int filter_param_1_int {0};
 };
 
 // Process and determine all command-line options provided. Will call printer error and call exit() for invalid

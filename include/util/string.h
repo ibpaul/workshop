@@ -11,6 +11,7 @@ namespace util {
 
 // Splits a string up using the supplied deliminator.
 std::vector<std::string> split(const std::string& str, char delim);
+std::vector<std::string> split(const std::string& str, const std::vector<char>& delims);
 
 }
 }
