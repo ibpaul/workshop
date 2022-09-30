@@ -1,14 +1,31 @@
+#include <iostream>
+
+// Hide error message reporting from CImg.
+#define cimg_verbosity 0
 #include "CImg.h"
+
+using namespace std;
 using namespace cimg_library;
 
 
-int main()
+int main(int argc, char* argv[])
 {
-    CImg<unsigned char> image("data/peppers.png");
+    if (argc != 2) {
+        cerr << "Please specify a file to play." << endl;
+        return 1;
+    }
 
-    CImgDisplay main_disp(image, "Test Image");
+    string filename {argv[1]};
 
-    while (!main_disp.is_closed()) {
-        main_disp.wait();
+    try {
+        CImg<unsigned char> image(filename.c_str());
+
+        CImgDisplay main_disp(image, "Test Image");
+
+        while (!main_disp.is_closed()) {
+            main_disp.wait();
+        }
+    } catch (...) {
+        std::cerr << "Unable to open file '" << filename << "'." << endl;
     }
 }
