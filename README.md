@@ -22,7 +22,7 @@ cmake ..
 3. Add library link references to the *png* project.
     - Right-click the *png* project and select *Properties...*.
     - Expand the group *Configuration Properties -> Linker -> General*. 
-    - For the setting *Additional Library Directories*, add a path to *<\repo_full_path\>/build/libs/zlib/Debug*. 
+    - For the setting *Additional Library Directories*, add a path to *\<repo_full_path\>/build/libs/zlib/Debug*. 
     - Expand the group *Configuration Properties -> Linker -> Input*. 
     - For the setting *Additional Dependencies*, add *zlibd.lib*.
 

@@ -20,5 +20,6 @@ set_target_properties(
 	play
 	PROPERTIES
 	VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+	VS_DEBUGGER_COMMAND_ARGUMENTS "data/peppers.png"
 )
 
