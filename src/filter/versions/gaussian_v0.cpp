@@ -1,16 +1,12 @@
-#include "filter/gaussian.h"
+#include "filter/versions/gaussian_v0.h"
 
-
-int test_func()
-{
-    return 37;
-}
 
 namespace LTS {
 namespace filters {
+namespace versions {
 
 
-GaussianKernel::GaussianKernel() : norm_factor{11.0f}, size{3} //: _kernel(new char[3][3])
+GaussianKernel_v0::GaussianKernel_v0() : norm_factor{11.0f}, size{3} //: _kernel(new char[3][3])
 {
     //_kernel = new char[3][3];
     kernel[0][0] = 1;
@@ -25,7 +21,7 @@ GaussianKernel::GaussianKernel() : norm_factor{11.0f}, size{3} //: _kernel(new c
 }
 
 
-void GaussianKernel::process(const uint8_t* input, size_t width, size_t height, uint8_t* output, int channels)
+void GaussianKernel_v0::process(const uint8_t* input, size_t width, size_t height, uint8_t* output, int channels)
 {
     for (size_t x = 0; x < width; ++x) {
         for (size_t y = 0; y < height; ++y) {
@@ -66,5 +62,6 @@ void GaussianKernel::process(const uint8_t* input, size_t width, size_t height, 
 }
 
 
+}
 }
 }
