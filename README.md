@@ -1,7 +1,7 @@
 # Workshop
 Tools for developing algorithms.
 
-## Build and Run
+## Quick Build and Run
 The project can be built and run with the following environments.
 
  - Windows - Visual Studio 2022
@@ -65,3 +65,21 @@ cd ..
 build/tools/filter/filter --type=gaussian{10,10} data/peppers.png output.png
 ```
 
+## Release Build and Run
+The default build environment creates *debug* executables which will not run as
+fast as full *release* builds, so it is import when running performance timing tests
+to compile as *release*.
+
+### CLion
+The steps are the same as in *Quick Build and Run* but with the adjustments below.
+
+- Create a *release* build configuration when you open *CLion* by going to the
+  menu *File -> Settings -> Build, Execution, Deployment -> CMake*. For the list
+  of *Profiles* click the *plus (+)* button, and it should add the *Release* build
+  profile automatically.
+
+- On the main menu, from the drop-down menu on the toolbar, make sure the option *Release*
+  is selected.
+
+- You may need to clean up existing files because *CLion* will sometimes use previous
+  build intermediates if previously compiled in *debug*. If needed, go to *Build -> Clean*.
