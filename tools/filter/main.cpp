@@ -13,7 +13,6 @@ using namespace std;
 using namespace cimg_library;
 
 #define MULTI_THREADED 1
-constexpr char TimeReportFile[] = "time-report.txt";
 
 #if MULTI_THREADED
 constexpr size_t NumOfRuns = 25;
@@ -29,6 +28,8 @@ cxxopts::Options program_options()
     options.add_options()
         ("input", "The input file to run through the filter.", cxxopts::value<string>())
         ("output", "The output file to save the filtered data to.", cxxopts::value<string>())
+        ("t,test", "Perform timing test on algorithm")
+        ("r,report", "Test report output file.", cxxopts::value<string>())
         ("h,help", "Print usage.");
 
     options.parse_positional({"input", "output"});
@@ -55,14 +56,18 @@ int main(int argc, char* argv[])
         cout << "input file not provided" << endl;
         exit(1);
     }
-
     string filename {result["input"].as<string>()};
+
+    string reportFile {};
+    if (result.count("report")) {
+        reportFile = result["report"].as<string>();
+    }
 
     try {
         CImg<unsigned char> image(filename.c_str());
         CImg<unsigned char> output(image.width(), image.height(), image.depth(), image.spectrum());
 
-        LTS::util::PerformanceTest pt {NumOfRuns, TimeReportFile};
+        LTS::util::PerformanceTest pt {NumOfRuns, reportFile};
 
         LTS::filters::GaussianKernel filter;
 
