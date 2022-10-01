@@ -10,6 +10,14 @@
 namespace LTS {
 namespace filter {
 
+
+// Templated 2-dimensional kernel.
+template<typename T, size_t N, size_t M>
+struct Kernel {
+    T w[N][M];  // Weights.
+};
+
+
 // A 2-dimensional kernel.
 struct Kernel_2d {
 
