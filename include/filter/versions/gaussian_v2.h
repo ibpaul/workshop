@@ -5,6 +5,7 @@
 #include <memory>
 #include "filter/ImageKernel.h"
 #include "filter/Kernel.h"
+#include "optimize_flags.h"
 
 
 namespace LTS {

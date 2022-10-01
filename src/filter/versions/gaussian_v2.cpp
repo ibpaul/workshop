@@ -1,36 +1,5 @@
 #include "filter/versions/gaussian_v2.h"
 
-
-// [OPTIMIZE NOTES]
-//  - Only enable either OPTIMIZE_1 or OPTIMIZE_2. Do not enable both!
-
-#define OPTIMIZE_1 1
-// OPTIMIZE_1 changes who the kernel weights are accessed in the filter's for loops.
-// Instead of accessing them like below each time in the for loop...
-//
-//     weights[y*num_cols + x]
-//
-// ...we access them like below...
-//
-//     *weights_ptr++
-//
-// This optimization relies on the nested for loops accessing the kernel weights sequentially
-// and thus avoids the multiplication during each loop.
-//
-// This does appear to give a performance increase but is still slower than the implementation
-// in Gaussian_v1 where the elements are stored in a multidimensional array and accessed like
-// the code below...
-//
-//     weights[y][x]
-//
-
-#define OPTIMIZE_2 0
-// OPTIMIZE_2 is not expected to provide any noticeable performance increase.
-//
-// It eliminates a variable from the inner loops and instead dereferences the pointer access
-// as implemented in OPTIMIZE_1.
-
-
 namespace LTS {
 namespace filter {
 namespace versions {
@@ -41,6 +10,17 @@ GaussianKernel_v2::GaussianKernel_v2()
       size{3},
       kernel{3, 3}
 {
+    #if OPTIMIZE_3
+    kernel._weights[0][0] = 1;
+    kernel._weights[0][1] = 1;
+    kernel._weights[0][2] = 1;
+    kernel._weights[1][0] = 1;
+    kernel._weights[1][1] = 3;
+    kernel._weights[1][2] = 1;
+    kernel._weights[2][0] = 1;
+    kernel._weights[2][1] = 1;
+    kernel._weights[2][2] = 1;
+    #else
     kernel._weights[0] = 1;
     kernel._weights[1] = 1;
     kernel._weights[2] = 1;
@@ -50,6 +30,7 @@ GaussianKernel_v2::GaussianKernel_v2()
     kernel._weights[6] = 1;
     kernel._weights[7] = 1;
     kernel._weights[8] = 1;
+    #endif
 }
 
 
@@ -76,6 +57,8 @@ void GaussianKernel_v2::process(const uint8_t* input, size_t width, size_t heigh
                     auto kc = *kc_p++;
                     #elif OPTIMIZE_2
                     // Do nothing.
+                    #elif OPTIMIZE_3
+                    auto kc = kernel._weights[ky][kx];
                     #else
                     auto kc = kernel._weights[ky*kernel._ncols + kx];
                     #endif
