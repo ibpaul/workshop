@@ -4,6 +4,8 @@ add_library(
     lts_filter
     versions/gaussian_v0.cpp
     versions/gaussian_v1.cpp
+    versions/gaussian_v2.cpp
+    Kernel.cpp
 )
 
 ## Unit Test Setup ############################################################

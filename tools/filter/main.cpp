@@ -8,6 +8,7 @@
 #include "filter/gaussian.h"
 #include "filter/versions/gaussian_v0.h"
 #include "filter/versions/gaussian_v1.h"
+#include "filter/versions/gaussian_v2.h"
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
@@ -110,6 +111,8 @@ LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts)
             return new LTS::filter::versions::GaussianKernel_v0;
         if (name == "gaussian_v1")
             return new LTS::filter::versions::GaussianKernel_v1;
+        if (name == "gaussian_v2")
+            return new LTS::filter::versions::GaussianKernel_v2;
     }
 
     throw invalid_argument("unrecognized filter type");
