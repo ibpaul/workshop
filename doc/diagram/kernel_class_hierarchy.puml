@@ -1,0 +1,34 @@
+@startuml
+
+abstract KernelBase<T> {
+    virtual & at(x, y)
+    virtual size_t sizeN()
+    virtual size_t sizeM()
+}
+
+class Kernel<T,N,M> {
+    Fastest filter processing.
+    Size set at compile-time.
+    ---
+    {field} w : T[N][M] // weights
+}
+
+class KernelDynamic<T> {
+    Slower filter processing.
+    Size set at run-time.
+}
+
+KernelBase <|-- Kernel
+KernelBase <|-- KernelDynamic
+
+
+class global {
+    convolute(KernelBase&)
+    convolute(Kernel<T,N,M>&)
+
+    gaussian(KernelBase&)
+}
+
+
+
+@enduml

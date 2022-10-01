@@ -11,10 +11,25 @@ namespace LTS {
 namespace filter {
 
 
+template<typename T>
+class KernelBase {
+
+public:
+    virtual size_t size_n() = 0;
+    virtual size_t size_m() = 0;
+    virtual T& at(size_t x, size_t y) = 0;
+};
+
+
 // Templated 2-dimensional kernel.
 template<typename T, size_t N, size_t M>
-struct Kernel {
+class Kernel : public KernelBase<T> {
+public:
     T w[N][M];  // Weights.
+
+    size_t size_n() override { return N; }
+    size_t size_m() override { return M; }
+    T& at(size_t x, size_t y) override { return w[y][x]; }
 };
 
 

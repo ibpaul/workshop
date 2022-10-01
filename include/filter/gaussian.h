@@ -10,6 +10,8 @@ namespace filter {
 
 using GaussianKernel = versions::GaussianKernel_v4;
 
+void load_gaussian(KernelBase<float>& kernel);
+
 }
 }
 

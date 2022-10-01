@@ -1,3 +1,4 @@
+#include "filter/gaussian.h"
 #include "filter/versions/gaussian_v4.h"
 #include "filter/operations.h"
 
@@ -10,15 +11,7 @@ GaussianKernel_v4::GaussianKernel_v4()
     : norm_factor{11.0f},
       size{3}
 {
-    kernel.w[0][0] = 1;
-    kernel.w[0][1] = 1;
-    kernel.w[0][2] = 1;
-    kernel.w[1][0] = 1;
-    kernel.w[1][1] = 3;
-    kernel.w[1][2] = 1;
-    kernel.w[2][0] = 1;
-    kernel.w[2][1] = 1;
-    kernel.w[2][2] = 1;
+    load_gaussian(kernel);
 }
 
 
