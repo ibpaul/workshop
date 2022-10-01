@@ -11,7 +11,7 @@ TEST(GAUSSIAN_TEST, GaussianFilterOn10x10MonochromeVerticalLinesImage) {
     auto image = LTS::image::vertical_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    LTS::filters::GaussianKernel filter{};
+    LTS::filter::GaussianKernel filter{};
 
     filter.process(&image[0], width, height, output, channels);
 
@@ -40,7 +40,7 @@ TEST(GAUSSIAN_TEST, GaussianFilterOn10x10RGBVerticalLinesImage) {
     auto image = LTS::image::vertical_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    LTS::filters::GaussianKernel filter{};
+    LTS::filter::GaussianKernel filter{};
 
     filter.process(&image[0], width, height, output, channels);
 
