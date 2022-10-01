@@ -1,7 +1,34 @@
 #include "filter/versions/gaussian_v2.h"
 
 
+// [OPTIMIZE NOTES]
+//  - Only enable either OPTIMIZE_1 or OPTIMIZE_2. Do not enable both!
+
 #define OPTIMIZE_1 1
+// OPTIMIZE_1 changes who the kernel weights are accessed in the filter's for loops.
+// Instead of accessing them like below each time in the for loop...
+//
+//     weights[y*num_cols + x]
+//
+// ...we access them like below...
+//
+//     *weights_ptr++
+//
+// This optimization relies on the nested for loops accessing the kernel weights sequentially
+// and thus avoids the multiplication during each loop.
+//
+// This does appear to give a performance increase but is still slower than the implementation
+// in Gaussian_v1 where the elements are stored in a multidimensional array and accessed like
+// the code below...
+//
+//     weights[y][x]
+//
+
+#define OPTIMIZE_2 0
+// OPTIMIZE_2 is not expected to provide any noticeable performance increase.
+//
+// It eliminates a variable from the inner loops and instead dereferences the pointer access
+// as implemented in OPTIMIZE_1.
 
 
 namespace LTS {
@@ -34,7 +61,7 @@ void GaussianKernel_v2::process(const uint8_t* input, size_t width, size_t heigh
         for (size_t y = 0; y < height; ++y) {
             std::fill_n(new_pixel.get(), channels, static_cast<float>(0.0f));
 
-            #ifdef OPTIMIZE_1
+            #if OPTIMIZE_1 || OPTIMIZE_2
             // This optimization avoids a multiplication in accessing the kernel weights as long
             // as the kernel weights are processed a row at a time in the for loops.
             //
@@ -47,6 +74,8 @@ void GaussianKernel_v2::process(const uint8_t* input, size_t width, size_t heigh
                 for (int kx = 0; kx < size; ++kx) {
                     #if OPTIMIZE_1
                     auto kc = *kc_p++;
+                    #elif OPTIMIZE_2
+                    // Do nothing.
                     #else
                     auto kc = kernel._weights[ky*kernel._ncols + kx];
                     #endif
@@ -67,8 +96,15 @@ void GaussianKernel_v2::process(const uint8_t* input, size_t width, size_t heigh
                     auto input_pixel = &input[input_y*width*channels + input_x*channels];
 
                     for (int i = 0; i < channels; ++i) {
+                        #if OPTIMIZE_2
+                        new_pixel[i] += (*kc_p) * (*(input_pixel + i));
+                        #else
                         new_pixel[i] += kc * (*(input_pixel + i));
+                        #endif
                     }
+                    #if OPTIMIZE_2
+                    kc_p++;
+                    #endif
                 }
             }
 
