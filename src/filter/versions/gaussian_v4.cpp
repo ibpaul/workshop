@@ -8,8 +8,6 @@ namespace versions {
 
 
 GaussianKernel_v4::GaussianKernel_v4()
-    : norm_factor{11.0f},
-      size{3}
 {
     load_gaussian(kernel);
 }

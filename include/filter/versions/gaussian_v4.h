@@ -28,15 +28,10 @@ public:
     GaussianKernel_v4();
 
     // Runs the Gaussian filter over the input image and places result into output.
-    void process(const uint8_t* input, size_t width, size_t height, uint8_t* output, int channels);
+    void process(const uint8_t* input, size_t width, size_t height, uint8_t* output, int channels) override;
 
 private:
-    //std::unique_ptr<char[3][3]> _kernel;
-    //float kernel[3][3];
-    //Kernel_2d kernel;
     Kernel<float, 3, 3> kernel;
-    float norm_factor;
-    size_t size;
 };
 
 }

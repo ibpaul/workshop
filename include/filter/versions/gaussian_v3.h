@@ -34,7 +34,6 @@ private:
     //std::unique_ptr<char[3][3]> _kernel;
     //float kernel[3][3];
     Kernel_2d kernel;
-    float norm_factor;
     size_t size;
 };
 

@@ -15,7 +15,6 @@ void convolute(
     size_t channels,
     uint8_t* output)
 {
-    static const float norm_factor {11.0f};
     unique_ptr<float[]> new_pixel { new float[channels] };
 
     for (size_t x = 0; x < ncols; ++x) {
@@ -82,7 +81,7 @@ void convolute(
             }
 
             for (int i = 0; i < channels; ++i) {
-                output[y*ncols*channels + x*channels + i] = static_cast<uint8_t>(new_pixel[i] / norm_factor);
+                output[y*ncols*channels + x*channels + i] = static_cast<uint8_t>(new_pixel[i]);
             }
         }
     }
