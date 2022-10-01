@@ -1,4 +1,5 @@
 #include "filter/versions/gaussian_v2.h"
+#include "filter/operations.h"
 
 namespace LTS {
 namespace filter {

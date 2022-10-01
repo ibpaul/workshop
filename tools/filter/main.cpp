@@ -113,6 +113,8 @@ LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts)
             return new LTS::filter::versions::GaussianKernel_v1;
         if (name == "gaussian_v2")
             return new LTS::filter::versions::GaussianKernel_v2;
+        if (name == "gaussian_v3")
+            return new LTS::filter::versions::GaussianKernel_v3;
     }
 
     throw invalid_argument("unrecognized filter type");

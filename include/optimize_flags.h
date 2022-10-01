@@ -38,5 +38,9 @@
 // This optimization configuration is the setup as employed in Gaussian_v1 and provides the
 // same performance level for Gaussian_v2. This is the fast optimization level currently.
 
+#define OPTIMIZE_4 0
+// OPTIMIZE_4 uses hard-code sizes for the 3x3 kernel in the filter for loops instead of reading
+// size values from the kernel struct.
+
 
 #endif //LTS_OPTIMIZE_FLAGS_H

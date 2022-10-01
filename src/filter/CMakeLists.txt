@@ -5,7 +5,9 @@ add_library(
     versions/gaussian_v0.cpp
     versions/gaussian_v1.cpp
     versions/gaussian_v2.cpp
+    versions/gaussian_v3.cpp
     Kernel.cpp
+    operations.cpp
 )
 
 ## Unit Test Setup ############################################################

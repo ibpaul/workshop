@@ -3,12 +3,12 @@
 #ifndef LTS_FILTER_GAUSSIAN_H
 #define LTS_FILTER_GAUSSIAN_H
 
-#include "versions/gaussian_v2.h"
+#include "versions/gaussian_v3.h"
 
 namespace LTS {
 namespace filter {
 
-using GaussianKernel = versions::GaussianKernel_v2;
+using GaussianKernel = versions::GaussianKernel_v3;
 
 }
 }
