@@ -22,11 +22,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <chrono>
+#include <stdio.h>
 #include "filter/Kernel.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "image/TestImages.h"
 #include "usbd_cdc_if.h"
+
+using namespace std::chrono;
 
 unsigned char output_image[256*256];
 
@@ -108,6 +112,8 @@ int main(void)
   LTS::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
   //LTS::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
 
+  char time_buffer[30];
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -117,7 +123,18 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  uint8_t buffer[] = "Hello, World!\r\n";
 	  CDC_Transmit_FS(buffer, sizeof(buffer));
+	  //auto start = high_resolution_clock::now();
+	  auto start = steady_clock::now();
 	  HAL_Delay(1000);
+	  //auto end = high_resolution_clock::now();
+	  auto end = steady_clock::now();
+	  auto diff = static_cast<float>(duration_cast<microseconds>(end-start).count()) / 1000.0f;
+	  //gcvt(diff, 10, time_buffer);
+	  //diff = 3.0f;
+	  snprintf(time_buffer, 30, "%f ms\r\n", diff);
+	  //snprintf(time_buffer, 20, "%f", diff);
+	  CDC_Transmit_FS(reinterpret_cast<uint8_t*>(time_buffer), strlen(time_buffer));
+
   }
   /* USER CODE END 3 */
 }
