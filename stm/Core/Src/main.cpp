@@ -26,6 +26,7 @@
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "image/TestImages.h"
+#include "usbd_cdc_if.h"
 
 unsigned char output_image[256*256];
 
@@ -114,6 +115,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  uint8_t buffer[] = "Hello, World!\r\n";
+	  CDC_Transmit_FS(buffer, sizeof(buffer));
+	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
