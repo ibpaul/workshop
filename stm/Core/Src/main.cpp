@@ -109,10 +109,14 @@ int main(void)
 
   auto input = LTS::image::vertical_lines(256, 256, 1);
 
+  auto start = HAL_GetTick();
   LTS::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
   //LTS::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
+  auto end = HAL_GetTick();
+  auto diff = end - start;
 
   char time_buffer[30];
+  snprintf(time_buffer, 20, "%d ms\r\n", diff);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -121,19 +125,23 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  uint8_t buffer[] = "Hello, World!\r\n";
-	  CDC_Transmit_FS(buffer, sizeof(buffer));
+	  //uint8_t buffer[] = "Hello, World!\r\n";
+	  //CDC_Transmit_FS(buffer, sizeof(buffer));
 	  //auto start = high_resolution_clock::now();
-	  auto start = steady_clock::now();
+	  //auto start = steady_clock::now();
+	  //auto start = HAL_GetTick();
+	  CDC_Transmit_FS(reinterpret_cast<uint8_t*>(time_buffer), strlen(time_buffer));
 	  HAL_Delay(1000);
 	  //auto end = high_resolution_clock::now();
-	  auto end = steady_clock::now();
-	  auto diff = static_cast<float>(duration_cast<microseconds>(end-start).count()) / 1000.0f;
-	  //gcvt(diff, 10, time_buffer);
+	  //auto end = steady_clock::now();
+	  //auto diff = static_cast<float>(duration_cast<microseconds>(end-start).count()) / 1000.0f;
 	  //diff = 3.0f;
-	  snprintf(time_buffer, 30, "%f ms\r\n", diff);
-	  //snprintf(time_buffer, 20, "%f", diff);
-	  CDC_Transmit_FS(reinterpret_cast<uint8_t*>(time_buffer), strlen(time_buffer));
+	  //auto end = HAL_GetTick();
+	  //auto diff = end - start;
+
+	  //snprintf(time_buffer, 30, "%f ms\r\n", diff);
+	  //snprintf(time_buffer, 20, "%d ms\r\n", diff);
+	  //CDC_Transmit_FS(reinterpret_cast<uint8_t*>(time_buffer), strlen(time_buffer));
 
   }
   /* USER CODE END 3 */
