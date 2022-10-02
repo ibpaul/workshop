@@ -1,14 +1,15 @@
 #include "filter/gaussian.h"
 
-#include <stdexcept>
+#include <cassert>
 
 using namespace std;
 
 namespace LTS {
 namespace filter {
 
-void load_gaussian(KernelBase<float>& kernel)
+void load_gaussian(IKernel<float>& kernel)
 {
+    // We are only working with 3x3 kernels at the moment.
 	assert(kernel.size_n() == 3 && kernel.size_m() == 3);
 
     kernel.at(0, 0) = 1 / 11.f;

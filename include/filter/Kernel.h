@@ -11,8 +11,9 @@ namespace LTS {
 namespace filter {
 
 
+// Abstract base class for all kernels. All our generalized kernel processing functions work on this interface.
 template<typename T>
-class KernelBase {
+class IKernel {
 
 public:
     virtual size_t size_n() = 0;
@@ -21,9 +22,17 @@ public:
 };
 
 
-// Templated 2-dimensional kernel.
+// Templated kernel. This is currently the fastest implementation of a kernel available (based on test runs through our
+// convolute() method. To make sure you have this performance gain, make sure you call the convolute() method with this
+// type and not as it's base IKernel type.
+//
+// [notes]
+//  - The performance gains are a result of:
+//      a) the kernel weights are accessed by the multidimensional array instead of computing pointer offsets.
+//      b) the templated convolute<>() method uses the N and M parameters to specify the kernel for loops and the
+//         compiler is able to perform further optimizations on these loops.
 template<typename T, size_t N, size_t M>
-class Kernel : public KernelBase<T> {
+class KernelFast : public IKernel<T> {
 public:
     T w[N][M];  // Weights.
 
@@ -34,6 +43,8 @@ public:
 
 
 // A 2-dimensional kernel.
+//
+// NOTE: This is very old and will likely be removed.
 struct Kernel_2d {
 
     bool _own;           // Flags if we own the memory.
@@ -54,11 +65,6 @@ struct Kernel_2d {
 
 
     ~Kernel_2d();
-
-
-//public:
-    // Perform the convolution over the input data.
-//    void convolute(size_t width, size_t height, size_t channels, const uint8_t* input, uint8_t* output);
 };
 
 }

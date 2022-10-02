@@ -104,7 +104,7 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  LTS::filter::Kernel<float, 3, 3> kernel;
+  LTS::filter::KernelFast<float, 3, 3> kernel;
   LTS::filter::load_gaussian(kernel);
 
   auto input = LTS::image::vertical_lines(256, 256, 1);

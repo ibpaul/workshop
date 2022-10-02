@@ -31,7 +31,7 @@ public:
     void process(const uint8_t* input, size_t width, size_t height, uint8_t* output, int channels) override;
 
 private:
-    Kernel<float, 3, 3> kernel;
+    KernelFast<float, 3, 3> kernel;
 };
 
 }

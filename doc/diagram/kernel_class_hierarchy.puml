@@ -1,32 +1,38 @@
 @startuml
 
-abstract KernelBase<T> {
+abstract IKernel<T> {
     virtual & at(x, y)
     virtual size_t sizeN()
     virtual size_t sizeM()
 }
 
-class Kernel<T,N,M> {
+class KernelFast<T,N,M> {
     Fastest filter processing.
     Size set at compile-time.
     ---
     {field} w : T[N][M] // weights
 }
 
-class KernelDynamic<T> {
+class Kernel<T> {
     Slower filter processing.
     Size set at run-time.
 }
 
-KernelBase <|-- Kernel
-KernelBase <|-- KernelDynamic
+class KernelEigen<T> {
+    Data structures from the Eigen
+    library are used.
+}
+
+IKernel <|-- KernelFast
+IKernel <|-- Kernel
+IKernel <|-- KernelEigen
 
 
 class global {
-    convolute(KernelBase&)
-    convolute(Kernel<T,N,M>&)
+    convolute(IKernel&)
+    convolute(KernelFast<T,N,M>&)
 
-    gaussian(KernelBase&)
+    gaussian(IKernel&)
 }
 
 

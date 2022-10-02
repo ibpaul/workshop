@@ -26,7 +26,7 @@ namespace filter {
 //    flipping of the kernel's matrix.
 template<typename Tkernel, size_t Nkernel, size_t Mkernel>
 void convolute(
-    const Kernel<Tkernel, Nkernel, Mkernel>& kernel,
+    const KernelFast<Tkernel, Nkernel, Mkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
