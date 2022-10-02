@@ -1,1 +1,2 @@
 libs/** linguist-vendored
+stm/*.c linquist-generated
