@@ -17,6 +17,7 @@
 /cmake-build-release
 **/Makefile
 /build
+**/*.cpp.bak
 
 # Ignore generated output from compiling third-party libraries.
 /libs
