@@ -24,8 +24,13 @@
 #include "filter/Kernel.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
-extern unsigned char IMAGE_DATA[];
-unsigned char output_image[512*512*3];
+#include "image/TestImages.h"
+
+unsigned char output_image[100*100];
+
+// NOTE: On-board flash is not large enough to hold our image data.
+//extern unsigned char IMAGE_DATA[];
+//unsigned char output_image[512*512*3];
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,7 +100,10 @@ int main(void)
   LTS::filter::Kernel<float, 3, 3> kernel;
   LTS::filter::load_gaussian(kernel);
 
-  LTS::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
+  auto input = LTS::image::vertical_lines(100, 100, 1);
+
+  LTS::filter::convolute(kernel, input.get(), 100, 100, 1, output_image);
+  //LTS::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
