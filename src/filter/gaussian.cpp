@@ -9,8 +9,7 @@ namespace filter {
 
 void load_gaussian(KernelBase<float>& kernel)
 {
-    if (kernel.size_n() != 3 || kernel.size_m() != 3)
-        throw runtime_error("only support kernels of size 3x3");
+	assert(kernel.size_n() == 3 && kernel.size_m() == 3);
 
     kernel.at(0, 0) = 1 / 11.f;
     kernel.at(0, 1) = 1 / 11.f;

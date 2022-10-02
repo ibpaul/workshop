@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "filter/Kernel.h"
+#include "filter/gaussian.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,6 +88,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
+
+  LTS::filter::Kernel<float, 3, 3> kernel;
+  LTS::filter::load_gaussian(kernel);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
