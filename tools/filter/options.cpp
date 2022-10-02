@@ -47,7 +47,7 @@ Options process_options(
         cout << "input file not provided" << endl;
         exit(1);
     }
-    opts.input_file = result["input"].as<string>();
+    opts.input = result["input"].as<string>();
 
     if (result.count("output")) {
         opts.output_file = result["output"].as<string>();

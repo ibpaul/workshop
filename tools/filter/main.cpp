@@ -1,6 +1,7 @@
 #include <iostream>
 #include <functional>
 #include <memory>
+#include <queue>
 
 // Hide error message reporting from CImg.
 #define cimg_verbosity 0
@@ -11,6 +12,7 @@
 #include "filter/versions/gaussian_v2.h"
 #include "filter/versions/gaussian_v3.h"
 #include "filter/versions/gaussian_v4.h"
+#include "image/TestImages.h"
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
@@ -22,7 +24,7 @@ using Image = CImg<unsigned char>;
 using LTS::util::PerformanceTest;
 
 
-unique_ptr<Image> load_image(const string& file_name);
+unique_ptr<Image> load_image(const string& input);
 void save_image(const Image& image, const string& file_name);
 void perform_test(const function<void()>& test_func, const Options& options);
 LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts);
@@ -32,7 +34,7 @@ int main(int argc, char* argv[])
 {
     auto opts = process_all_options(argc, argv);
 
-    unique_ptr<Image> image {load_image(opts.input_file)};
+    unique_ptr<Image> image {load_image(opts.input)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
     unique_ptr<LTS::filter::ImageKernel> kernel;
@@ -58,15 +60,49 @@ int main(int argc, char* argv[])
 }
 
 
-unique_ptr<Image> load_image(const string& file_name)
+unique_ptr<Image> load_image(const string& input)
 {
+    // Check if any standard test patterns were specified.
+    if (LTS::util::starts_with(input, "vertical-lines")) {
+        vector<string> elements = LTS::util::split(input, {',', '{', '}'});
+        queue<string> q;
+        for (auto& e : elements)
+            q.push(e);
+
+        q.pop();
+
+        if (q.empty()) {
+            cout << "width must be specified for vertical-lines" << endl;
+            exit(1);
+        }
+        auto width = stoi(q.front());
+        q.pop();
+
+        if (q.empty()) {
+            cout << "height must be specified for vertical-lines" << endl;
+            exit(1);
+        }
+        auto height = stoi(q.front());
+        q.pop();
+
+        auto channels = 1;
+        if (!q.empty()) {
+            channels = stoi(q.front());
+            q.pop();
+        }
+
+        auto image = make_unique<Image>(width, height, 1, channels);
+        LTS::image::vertical_lines(image->data(), width, height, channels);
+        return image;
+    }
+
     try {
-        return make_unique<Image>(file_name.c_str());
+        return make_unique<Image>(input.c_str());
     } catch (CImgIOException&) {
-        cerr << "Unable to open file '" << file_name << "'." << endl;
+        cerr << "Unable to open file '" << input << "'." << endl;
         exit(1);
     } catch (...) {
-        cerr << "Unknown error occurred opening file '" << file_name << "'." << endl;
+        cerr << "Unknown error occurred opening file '" << input << "'." << endl;
         exit(1);
     }
 }

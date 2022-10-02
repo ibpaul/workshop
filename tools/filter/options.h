@@ -7,7 +7,7 @@
 
 
 struct Options {
-    std::string input_file;
+    std::string input;          // File or test pattern specification.
     std::string output_file;
     std::string report_file;
     bool test;
