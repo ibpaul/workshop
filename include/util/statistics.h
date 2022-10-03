@@ -39,6 +39,9 @@ typename Container::value_type standard_deviation(Container vals)
     return sqrt(sum / (vals.size() - 1));
 }
 
+
+float normal_pdf(float x, float sigma = 1.0f, float mu = 0.0f);
+
 }
 }
 

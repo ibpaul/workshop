@@ -1,8 +1,9 @@
 include_directories(../../include)
 
-add_library(utils
+add_library(util
     PerformanceTest.cpp
     string.cpp
+    statistics.cpp
 )
 
 ## Unit Test Setup ############################################################
@@ -15,6 +16,7 @@ add_executable(
 target_link_libraries(
     util_test
     GTest::gtest_main
+    util
 )
 
 include(GoogleTest)

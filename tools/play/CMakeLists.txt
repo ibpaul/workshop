@@ -11,9 +11,9 @@ include_directories(${Workshop_SOURCE_DIR}/libs/libpng)
 
 
 if (WIN32)
-    target_link_libraries(play PUBLIC lts_filter image utils png_static zlibstatic)
+    target_link_libraries(play PUBLIC lts_filter image util png_static zlibstatic)
 else()
-    target_link_libraries(play PUBLIC lts_filter image utils png_static X11)
+    target_link_libraries(play PUBLIC lts_filter image util png_static X11)
 endif()
 
 set_target_properties(
