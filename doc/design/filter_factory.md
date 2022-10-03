@@ -54,3 +54,8 @@ The `FilterFactory` parses these strings and returns an appropriately constructe
        overload will operate on the general `IKernel` interface.
        - The `FilterFactory` must take care that the faster `convolute` function is
          called if it is able to generate a `KernelFast` object.
+
+
+## Design
+
+![Filter Factory Class Diagram](diagram/filter_factory.png)

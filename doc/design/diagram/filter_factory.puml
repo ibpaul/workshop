@@ -1,0 +1,45 @@
+@startuml
+
+class FilterFactory {
+    Creates runnable objects composed
+    of kernel and processing function.
+    ---
+    create(string spec) : IKernel*
+}
+
+abstract IFilter {
+    Holds a kernel and process function.
+    ---
+    void process(...)
+}
+
+class FilterFast {
+    Wraps a KernelFast object.
+    Fastest filter option.
+    ---
+    {field} _kernel : FastKernel*
+    {field} _process : void (*)(...)
+}
+
+class Filter {
+    General filter holding an IKernel object.
+    ---
+    {field} _kernel : IKernel*
+    {field} _process : void (*)(...)
+}
+
+
+IFilter <|-- FilterFast
+IFilter <|-- Filter
+
+
+class global {
+    convolute(IKernel&)
+    convolute(KernelFast<T,M,N>&)
+
+    load_gaussian(IKernel&)
+}
+
+
+
+@enduml
