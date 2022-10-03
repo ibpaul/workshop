@@ -23,32 +23,35 @@ void load_gaussian(IKernel<float>& kernel)
     // We only allow odd sizes for m and n.
     assert((kernel.size_m() % 2) && (kernel.size_n() % 2));
 
-    auto midpoint_x = kernel.size_n() / 2;
-    auto midpoint_y = kernel.size_m() / 2;
+    auto midpoint_n = kernel.size_n() / 2;
+    auto midpoint_m = kernel.size_m() / 2;
 
-    for (size_t y = midpoint_y; y < kernel.size_m(); ++y) {
-        auto cur_norm_y = util::normal_pdf(_point_to_normal(y, midpoint_y));
+    for (size_t m = midpoint_m; m < kernel.size_m(); ++m) {
+        auto cur_norm_m = util::normal_pdf(_point_to_normal(m, midpoint_m));
 
-        for (size_t x = midpoint_x; x < kernel.size_n(); ++x) {
-            auto cur_norm_x = util::normal_pdf(_point_to_normal(x, midpoint_x));
-            auto val = cur_norm_x * cur_norm_y;
-            kernel.at(x, y) = val;
+        for (size_t n = midpoint_n; n < kernel.size_n(); ++n) {
+            auto cur_norm_n = util::normal_pdf(_point_to_normal(n, midpoint_n));
+            auto val = cur_norm_n * cur_norm_m;
+            kernel.at(m, n) = val;
         }
 
         // We only compute the kernel for positive values. Copy the computed values into the mirror quadrant.
         // HACK: This relies on knowing the internal workings of Kernel.
-        auto row_start = &kernel.at(0, y);
-        reverse_copy(row_start + midpoint_x - 1, row_start + kernel.size_n(), row_start);
+        auto row_start = &kernel.at(m, 0);
+        reverse_copy(row_start + midpoint_n - 1, row_start + kernel.size_n(), row_start);
     }
 
     // We have computed the kernel for one quadrant, copied the values to another quadrant. Let's copy the values
     // into the other half of the kernel now.
     // HACK: This relies on knowing the internal workings of Kernel.
-    for (size_t y = 0; y < midpoint_y; ++y) {
-        auto row_start_src = &kernel.at(0, kernel.size_m() - y - 1);
-        auto row_start_dest = &kernel.at(0, y);
+    for (size_t m = 0; m < midpoint_m; ++m) {
+        auto row_start_src = &kernel.at(kernel.size_m() - m - 1, 0);
+        auto row_start_dest = &kernel.at(m, 0);
         copy(row_start_src, row_start_src + kernel.size_n(), row_start_dest);
     }
+
+    // HACK: Adjustment to get the processed image at the same level of brightness.
+//    kernel *= 3.0f;
 }
 
 }

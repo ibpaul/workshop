@@ -25,4 +25,6 @@
  - The pixels are computed by multiplying the value of the normal pdf at the
    pixel's x, y location.
  - Pixel values are calculated by row, starting at the middle of the row and
-   then
+   then.
+ - The current implementation is darkening the image. The kernel needs to be
+   normalized (i.e. the area under the kernel's normal curves should sum to 1.0).

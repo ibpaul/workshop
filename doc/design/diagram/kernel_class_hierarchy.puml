@@ -1,16 +1,16 @@
 @startuml
 
 abstract IKernel<T> {
-    virtual & at(x, y)
-    virtual size_t sizeN()
-    virtual size_t sizeM()
+    virtual & at(m, n)
+    virtual size_t size_m()
+    virtual size_t size_n()
 }
 
-class KernelFast<T,N,M> {
+class KernelFast<T,M,N> {
     Fastest filter processing.
     Size set at compile-time.
     ---
-    {field} w : T[N][M] // weights
+    {field} w : T[M][N] // weights
 }
 
 class Kernel<T> {
@@ -30,9 +30,9 @@ IKernel <|-- KernelEigen
 
 class global {
     convolute(IKernel&)
-    convolute(KernelFast<T,N,M>&)
+    convolute(KernelFast<T,M,N>&)
 
-    gaussian(IKernel&)
+    load_gaussian(IKernel&)
 }
 
 

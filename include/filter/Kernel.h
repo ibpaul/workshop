@@ -16,9 +16,20 @@ template<typename T>
 class IKernel {
 
 public:
-    virtual size_t size_n() = 0;
-    virtual size_t size_m() = 0;
-    virtual T& at(size_t x, size_t y) = 0;
+    virtual size_t size_m() = 0;            // Number of rows in the kernel.
+    virtual size_t size_n() = 0;            // Number of columns in the kernel
+    virtual T& at(size_t m, size_t n) = 0;  // Access and set element at index (m, n).
+
+    virtual IKernel& operator*=(T scalar)
+    {
+        for (size_t m = 0; m < size_m(); ++m) {
+            for (size_t n = 0; n < size_n(); ++n) {
+                at(m, n) *= scalar;
+            }
+        }
+
+        return *this;
+    }
 };
 
 
@@ -29,16 +40,16 @@ public:
 // [notes]
 //  - The performance gains are a result of:
 //      a) the kernel weights are accessed by the multidimensional array instead of computing pointer offsets.
-//      b) the templated convolute<>() method uses the N and M parameters to specify the kernel for loops and the
+//      b) the templated convolute<>() method uses the M and N parameters to specify the kernel for loops and the
 //         compiler is able to perform further optimizations on these loops.
-template<typename T, size_t N, size_t M>
+template<typename T, size_t M, size_t N>
 class KernelFast : public IKernel<T> {
 public:
-    T w[N][M];  // Weights.
+    T w[M][N];  // Weights.
 
-    size_t size_n() override { return N; }
     size_t size_m() override { return M; }
-    T& at(size_t x, size_t y) override { return w[y][x]; }
+    size_t size_n() override { return N; }
+    T& at(size_t m, size_t n) override { return w[m][n]; }
 };
 
 

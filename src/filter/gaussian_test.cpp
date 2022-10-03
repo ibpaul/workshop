@@ -78,9 +78,9 @@ TEST(gaussian_test, kernel3x3) {
 
     load_gaussian(k);
 
-    for (int y = 0; y < 3; ++y) {
-        for (int x = 0; x < 3; ++x) {
-            EXPECT_NEAR(expected[y][x], k.w[y][x], 0.00001);
+    for (int m = 0; m < 3; ++m) {
+        for (int n = 0; n < 3; ++n) {
+            EXPECT_NEAR(expected[m][n], k.w[m][n], 0.00001);
         }
     }
 }
