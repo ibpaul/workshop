@@ -18,7 +18,7 @@ add_library(
 
 add_executable(
     filter_test
-    Gaussian_test.cpp
+    gaussian_test.cpp
 )
 
 target_link_libraries(
@@ -26,6 +26,7 @@ target_link_libraries(
     GTest::gtest_main
     lts_filter
     image
+    util
 )
 
 include(GoogleTest)
