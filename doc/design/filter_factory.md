@@ -59,3 +59,26 @@ The `FilterFactory` parses these strings and returns an appropriately constructe
 ## Design
 
 ![Filter Factory Class Diagram](diagram/filter_factory.png)
+
+
+## ToDo
+
+- Need to define the `process(...)` method of `IKernel`.
+  - First option was to have a single `process(...)` method that takes
+    a general `IData` object which describes the passed data (e.g. dimensionality
+    of the data and the sizes of each dimension).
+  - Going to try having overloaded `process(...)` methods, one for each
+    type of dimensiontality of the data passed and with standard size parameters
+    also. This mimics the current setup we have where we are processing images
+    with `process(data*, height, width, channels)`.
+  - Any generality of data created must take into account the number of channels
+    the data contains along with the dimensional sizes/shape. This is how our
+    image data is structured, 1 channel for monochrome images and 3 channels
+    for red, green, blue (RGB) images.
+    - *Could multiple channels be modeled as a 3-dimensional data set?*
+  - The `FilterFast` specifies a templated `KernelFast` passed to its
+    constructor but this requires that we template the `FilterFast` class as
+    well.
+    - *Is there any reason not to template `FilterFast`? I was hesitant at first,
+      but I don't really see any reason not to except future code bloat but
+      our little utility won't be affected by this.*

@@ -1,7 +1,11 @@
 # Workshop
 Tools for developing algorithms.
 
-## Quick Build and Run
+The [Quick Start](#quick-start) guide may be found below.
+
+Design documents may be found [here](doc/design.md)
+
+## Quick Start
 The project can be built and run with the following environments.
 
  - Windows - Visual Studio 2022

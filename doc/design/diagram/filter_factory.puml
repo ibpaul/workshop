@@ -4,7 +4,7 @@ class FilterFactory {
     Creates runnable objects composed
     of kernel and processing function.
     ---
-    create(string spec) : IKernel*
+    create(string spec) : IFilter*
 }
 
 abstract IFilter {
@@ -13,9 +13,11 @@ abstract IFilter {
     void process(...)
 }
 
-class FilterFast {
+class FilterFast<T,M,N> {
     Wraps a KernelFast object.
     Fastest filter option.
+    ---
+    ctor(FilterFast*, process*)
     ---
     {field} _kernel : FastKernel*
     {field} _process : void (*)(...)
@@ -23,6 +25,8 @@ class FilterFast {
 
 class Filter {
     General filter holding an IKernel object.
+    ---
+    ctor(IFilter*, process*)
     ---
     {field} _kernel : IKernel*
     {field} _process : void (*)(...)
