@@ -1,9 +1,10 @@
 @startuml
 
 abstract IKernel<T> {
-    virtual & at(m, n)
-    virtual size_t size_m()
-    virtual size_t size_n()
+    virtual T& at(m, n)
+    virtual const T& at(m, n) const
+    virtual size_t size_m() const
+    virtual size_t size_n() const
 }
 
 class KernelFast<T,M,N> {
@@ -16,6 +17,10 @@ class KernelFast<T,M,N> {
 class Kernel<T> {
     Slower filter processing.
     Size set at run-time.
+    ---
+    ctor(size_t m, size_t n)
+    ---
+    - w : unique_ptr<T[]>
 }
 
 class KernelEigen<T> {

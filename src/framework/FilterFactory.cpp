@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <queue>
 #include "framework/FilterFast.h"
+#include "framework/Filter.h"
 #include "filter/Kernel.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
@@ -10,6 +11,8 @@
 
 using namespace std;
 using LTS::filter::KernelFast;
+using LTS::filter::Kernel;
+using LTS::filter::IKernel;
 using LTS::filter::load_gaussian;
 using LTS::filter::convolute;
 using LTS::util::starts_with;
@@ -44,13 +47,13 @@ unique_ptr<IFilter> FilterFactory::create(const string& spec)
         if (parts_q.empty()) {
             throw invalid_argument("no kernel size specified in '" + spec + "'");
         }
-        auto size_m = stoi(parts_q.front());
+        auto size_m = static_cast<size_t>(stoi(parts_q.front()));
         parts_q.pop();
 
         if (parts_q.empty()) {
             throw invalid_argument("only 2-dimensional kernels supported at the time");
         }
-        auto size_n = stoi(parts_q.front());
+        auto size_n = static_cast<size_t>(stoi(parts_q.front()));
         parts_q.pop();
 
         // See if we can make a FilterFast.
@@ -68,10 +71,13 @@ unique_ptr<IFilter> FilterFactory::create(const string& spec)
         }
 
         // Fallback on making a normal Filter.
+        unique_ptr<IKernel<float>> kernel {new Kernel<float>{size_m, size_n}};
+        load_gaussian(*kernel);
 
-        throw invalid_argument("not implemented");
-
-
+        return unique_ptr<IFilter>(new Filter<float>(
+            std::move(kernel),
+            &convolute
+        ));
     } else {
         throw invalid_argument("cannot process filter specification of '" + spec + "'");
     }

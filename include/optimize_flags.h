@@ -32,7 +32,7 @@
 // It eliminates a variable from the inner loops and instead dereferences the pointer access
 // as implemented in OPTIMIZE_1.
 
-#define OPTIMIZE_3 1
+#define OPTIMIZE_3 0
 // OPTIMIZE_3 converts the kernel weights to a multidimensional array.
 //
 // This optimization configuration is the setup as employed in Gaussian_v1 and provides the

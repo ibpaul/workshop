@@ -23,7 +23,7 @@ class FilterFast<T,M,N> {
     {field} _process : void (*)(...)
 }
 
-class Filter {
+class Filter<T> {
     General filter holding an IKernel object.
     ---
     ctor(IFilter*, process*)

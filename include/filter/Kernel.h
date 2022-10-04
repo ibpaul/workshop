@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include "optimize_flags.h"
 
 namespace LTS {
@@ -16,9 +17,11 @@ template<typename T>
 class IKernel {
 
 public:
-    virtual size_t size_m() = 0;            // Number of rows in the kernel.
-    virtual size_t size_n() = 0;            // Number of columns in the kernel
+    virtual size_t size_m() const = 0;      // Number of rows in the kernel.
+    virtual size_t size_n() const = 0;      // Number of columns in the kernel
     virtual T& at(size_t m, size_t n) = 0;  // Access and set element at index (m, n).
+    virtual const T& at(size_t m, size_t n) const = 0;
+    virtual ~IKernel() { }
 
     virtual IKernel& operator*=(T scalar)
     {
@@ -47,9 +50,32 @@ class KernelFast : public IKernel<T> {
 public:
     T w[M][N];  // Weights.
 
-    size_t size_m() override { return M; }
-    size_t size_n() override { return N; }
+    size_t size_m() const override { return M; }
+    size_t size_n() const override { return N; }
     T& at(size_t m, size_t n) override { return w[m][n]; }
+    const T& at(size_t m, size_t n) const override { return w[m][n]; }
+};
+
+
+// General kernel.
+template<typename T>
+class Kernel : public IKernel<T> {
+public:
+    Kernel(size_t m, size_t n)
+        : w {new T[m*n]},
+          _m {m},
+          _n {n}
+    { }
+
+    size_t size_m() const override { return _m; }
+    size_t size_n() const override { return _n; }
+    T& at(size_t m, size_t n) override { return w[m * _n + n]; }
+    const T& at(size_t m, size_t n) const override { return w[m * _n + n]; }
+
+private:
+    std::unique_ptr<T[]> w;
+    size_t _m;
+    size_t _n;
 };
 
 
