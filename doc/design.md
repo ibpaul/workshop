@@ -12,3 +12,9 @@
      matrix in code but normally means a matrix with a specific set of values.
  - *filter* - A combination of a kernel loaded with specific values and an
      associated processing method such as convolution.
+
+## ToDo
+ - Change namespace `filter` to `kernel`?
+   - Most of our objects in here are kernels, but it also contains the operations
+     used on kernel objects, so the keeping the namespace `filter` the same
+     is logically consistent.

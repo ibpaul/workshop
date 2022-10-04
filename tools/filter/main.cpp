@@ -6,6 +6,7 @@
 // Hide error message reporting from CImg.
 #define cimg_verbosity 0
 #include "CImg.h"
+#include "framework/FilterFactory.h"
 #include "filter/gaussian.h"
 #include "filter/versions/gaussian_v0.h"
 #include "filter/versions/gaussian_v1.h"
@@ -16,6 +17,8 @@
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
+
+#define USE_FACTORY 1
 
 using namespace std;
 using namespace cimg_library;
@@ -37,6 +40,17 @@ int main(int argc, char* argv[])
     unique_ptr<Image> image {load_image(opts.input)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
+    #if USE_FACTORY
+
+    LTS::framework::FilterFactory factory;
+    auto filter = factory.create("");
+
+    function<void()> test_func = ([&](){
+        filter->process(image->data(), image->height(), image->width(), image->spectrum(), output.data());
+    });
+
+    #else
+
     unique_ptr<LTS::filter::ImageKernel> kernel;
     try {
         kernel = unique_ptr<LTS::filter::ImageKernel>{create_kernel(opts.filter, opts)};
@@ -48,6 +62,8 @@ int main(int argc, char* argv[])
     function<void()> test_func = ([&](){
         kernel->process(image->data(), image->width(), image->height(), output.data(), image->spectrum());
     });
+
+    #endif
 
     if (opts.test) {
         perform_test(test_func, opts);

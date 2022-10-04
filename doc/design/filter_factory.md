@@ -82,3 +82,13 @@ The `FilterFactory` parses these strings and returns an appropriately constructe
     - *Is there any reason not to template `FilterFast`? I was hesitant at first,
       but I don't really see any reason not to except future code bloat but
       our little utility won't be affected by this.*
+  - I added to `FilterFast` a pointer to the templated kernel like `unique_ptr<KernelFast<T,M,N>>`.
+    - I did this because the initial test of `FilterFactory` creates a new of `KernelFast`,
+      loads the gaussian filter via `load_gaussian()`, and moves it into `FilterFast`.
+    - It might be possible for `FilterFast` have a none pointer `KernelFast` and instead
+      have a direct member instance.
+        - How would we load kernel weights (e.g. the call to `load_gaussian()`)?
+          - Don't want `FilterFast` to have to call `load_gaussian()`, the weights should
+            be loaded before it is passed into `FilterFast`.
+          - Seems like the only way to have a non-pointer to `KernelFast` is copying the
+            kernel into `FilterFast`.
