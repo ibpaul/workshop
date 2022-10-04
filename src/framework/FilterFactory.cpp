@@ -56,8 +56,17 @@ unique_ptr<IFilter> FilterFactory::create(const string& spec)
         auto size_n = static_cast<size_t>(stoi(parts_q.front()));
         parts_q.pop();
 
+        bool use_no_fast = false;
+        if (!parts_q.empty()) {
+            auto p = parts_q.front();
+            if (p == "nofast") {
+                use_no_fast = true;
+                parts_q.pop();
+            }
+        }
+
         // See if we can make a FilterFast.
-        if (size_m == size_n) {
+        if (size_m == size_n && !use_no_fast) {
             if (size_m == 3)
                 return make_fast_filter<3>();
             if (size_m == 5)
