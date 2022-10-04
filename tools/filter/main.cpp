@@ -17,8 +17,7 @@
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
-
-#define USE_FACTORY 1
+#include "config.h"
 
 using namespace std;
 using namespace cimg_library;
@@ -43,7 +42,7 @@ int main(int argc, char* argv[])
     #if USE_FACTORY
 
     LTS::framework::FilterFactory factory;
-    auto filter = factory.create("");
+    auto filter = factory.create(opts.filter_spec);
 
     function<void()> test_func = ([&](){
         filter->process(image->data(), image->height(), image->width(), image->spectrum(), output.data());

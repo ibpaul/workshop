@@ -78,6 +78,10 @@ void process_type_options(cxxopts::ParseResult& result, Options& opts)
     }
 
     auto str = result["type"].as<string>();
+
+    #if USE_FACTORY
+    opts.filter_spec = str;
+    #else
     auto vals_list = LTS::util::split(str, {',', '{', '}'});
     queue<string, deque<string>> vals {deque<string>(vals_list.begin(), vals_list.end())};
 
@@ -102,6 +106,7 @@ void process_type_options(cxxopts::ParseResult& result, Options& opts)
         opts.filter_param_1_int = stoi(vals.front());
         vals.pop();
     }
+    #endif
 }
 
 
