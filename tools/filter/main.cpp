@@ -25,7 +25,6 @@ using LTS::util::PerformanceTest;
 unique_ptr<Image> load_image(const string& input);
 void save_image(const Image& image, const string& file_name);
 void perform_test(const function<void()>& test_func, const Options& options);
-void linker_hack(Image* image, Image* output);
 
 
 int main(int argc, char* argv[])
@@ -50,8 +49,6 @@ int main(int argc, char* argv[])
 
     if (!opts.output_file.empty())
         save_image(output, opts.output_file);
-
-    linker_hack(image.get(), &output);
 }
 
 
@@ -132,14 +129,4 @@ void perform_test(const function<void()>& test_func, const Options& options)
         cout << "Unexpected error occurred." << endl;
         exit(1);
     }
-}
-
-
-void linker_hack(Image* image, Image* output)
-{
-    // HACK: Lines below only included to get linker to link this functions.
-    LTS::filter::KernelFast<float, 3, 3> temp;
-    LTS::filter::load_gaussian(temp);
-    LTS::filter::convolute(temp, image->data(), image->height(), image->width(), image->spectrum(), output->data());
-    LTS::filter::convolute(*dynamic_cast<LTS::filter::IKernel<float>*>(&temp), image->data(), image->height(), image->width(), image->spectrum(), output->data());
 }
