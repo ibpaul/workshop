@@ -177,6 +177,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/src/util/CMakeLists.txt</locationURI>
 		</link>
 		<link>
+			<name>src/util/statistics.cpp</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/util/statistics.cpp</locationURI>
+		</link>
+		<link>
 			<name>src/util/string.cpp</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/src/util/string.cpp</locationURI>
