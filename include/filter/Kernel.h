@@ -72,37 +72,14 @@ public:
     T& at(size_t m, size_t n) override { return w[m * _n + n]; }
     const T& at(size_t m, size_t n) const override { return w[m * _n + n]; }
 
+#if !OPTIMIZE_5
 private:
+#endif
     std::unique_ptr<T[]> w;
     size_t _m;
     size_t _n;
 };
 
-
-// A 2-dimensional kernel.
-//
-// NOTE: This is very old and will likely be removed.
-struct Kernel_2d {
-
-    bool _own;           // Flags if we own the memory.
-    size_t _ncols;       // Number of columns.
-    size_t _nrows;       // Number of rows.
-    #if OPTIMIZE_3
-    float _weights[3][3];
-    #else
-    float* _weights;     // Kernel's weights.
-    #endif
-
-    // Constructs a new, uninitialized kernel.
-    Kernel_2d(size_t ncols, size_t nrows);
-
-    // Deleting these for now. I haven't decided if we need them yet.
-    Kernel_2d(const Kernel_2d& k) = delete;
-    Kernel_2d& operator=(const Kernel_2d& k) = delete;
-
-
-    ~Kernel_2d();
-};
 
 }
 }

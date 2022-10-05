@@ -42,5 +42,9 @@
 // OPTIMIZE_4 uses hard-code sizes for the 3x3 kernel in the filter for loops instead of reading
 // size values from the kernel struct.
 
+#define OPTIMIZE_5 0
+// Development hack to improve performance by giving direct access to the general Kernel object's
+// data members instead of through its virtual methods.
+
 
 #endif //LTS_OPTIMIZE_FLAGS_H

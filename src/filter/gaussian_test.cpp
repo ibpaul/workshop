@@ -1,10 +1,11 @@
 #include <gtest/gtest.h>
 #include "image/TestImages.h"
 #include "filter/gaussian.h"
-#include "filter/versions/gaussian_v3.h"
+#include "filter/operations.h"
 
 using LTS::filter::KernelFast;
 using LTS::filter::load_gaussian;
+using LTS::filter::convolute;
 
 TEST(gaussian_test, GaussianFilterOn10x10MonochromeVerticalLinesImage) {
     constexpr int width = 10;
@@ -14,9 +15,18 @@ TEST(gaussian_test, GaussianFilterOn10x10MonochromeVerticalLinesImage) {
     auto image = LTS::image::vertical_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    LTS::filter::versions::GaussianKernel_v3 filter{};
+    KernelFast<float, 3, 3> k;
+    k.w[0][0] = 1.0f / 11.0f;
+    k.w[0][1] = 1.0f / 11.0f;
+    k.w[0][2] = 1.0f / 11.0f;
+    k.w[1][0] = 1.0f / 11.0f;
+    k.w[1][1] = 3.0f / 11.0f;
+    k.w[1][2] = 1.0f / 11.0f;
+    k.w[2][0] = 1.0f / 11.0f;
+    k.w[2][1] = 1.0f / 11.0f;
+    k.w[2][2] = 1.0f / 11.0f;
 
-    filter.process(&image[0], width, height, output, channels);
+    convolute(k, &image[0], height, width, channels, output);
 
     uint8_t expected[] = {
         69, 115, 139, 115, 139, 115, 139, 115, 139, 185,
@@ -43,9 +53,18 @@ TEST(gaussian_test, GaussianFilterOn10x10RGBVerticalLinesImage) {
     auto image = LTS::image::vertical_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    LTS::filter::versions::GaussianKernel_v3 filter{};
+    KernelFast<float, 3, 3> k;
+    k.w[0][0] = 1.0f / 11.0f;
+    k.w[0][1] = 1.0f / 11.0f;
+    k.w[0][2] = 1.0f / 11.0f;
+    k.w[1][0] = 1.0f / 11.0f;
+    k.w[1][1] = 3.0f / 11.0f;
+    k.w[1][2] = 1.0f / 11.0f;
+    k.w[2][0] = 1.0f / 11.0f;
+    k.w[2][1] = 1.0f / 11.0f;
+    k.w[2][2] = 1.0f / 11.0f;
 
-    filter.process(&image[0], width, height, output, channels);
+    convolute(k, &image[0], height, width, channels, output);
 
     uint8_t expected[] = {
         69, 69, 69, 115, 115, 115, 139, 139, 139, 115, 115, 115, 139, 139, 139, 115, 115, 115, 139, 139, 139, 115, 115, 115, 139, 139, 139, 185, 185, 185,

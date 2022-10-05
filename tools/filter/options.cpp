@@ -64,7 +64,7 @@ Options process_options(
 
     assert(opts.num_test_threads > 0);
     assert(opts.num_test_cycles > 0);
-    assert(!opts.filter.empty());
+    assert(!opts.filter_spec.empty());
 
     return opts;
 }
@@ -77,36 +77,7 @@ void process_type_options(cxxopts::ParseResult& result, Options& opts)
         exit(1);
     }
 
-    auto str = result["type"].as<string>();
-
-    #if USE_FACTORY
-    opts.filter_spec = str;
-    #else
-    auto vals_list = LTS::util::split(str, {',', '{', '}'});
-    queue<string, deque<string>> vals {deque<string>(vals_list.begin(), vals_list.end())};
-
-    if (vals.empty()) {
-        cout << "Unable to parse --type parameter." << endl;
-        exit(1);
-    }
-
-    // NOTE: Need to check that the filter type is valid in the future.
-    opts.filter = vals.front();
-    vals.pop();
-
-    // NOTE: Need a better way to extract filter parameters.
-    if (!vals.empty()) {
-        opts.num_filter_params_provided++;
-        opts.filter_param_0_int = stoi(vals.front());
-        vals.pop();
-    }
-
-    if (!vals.empty()) {
-        opts.num_filter_params_provided++;
-        opts.filter_param_1_int = stoi(vals.front());
-        vals.pop();
-    }
-    #endif
+    opts.filter_spec = result["type"].as<string>();
 }
 
 

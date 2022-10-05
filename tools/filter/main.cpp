@@ -8,16 +8,12 @@
 #include "CImg.h"
 #include "framework/FilterFactory.h"
 #include "filter/gaussian.h"
-#include "filter/versions/gaussian_v0.h"
-#include "filter/versions/gaussian_v1.h"
-#include "filter/versions/gaussian_v2.h"
-#include "filter/versions/gaussian_v3.h"
-#include "filter/versions/gaussian_v4.h"
 #include "image/TestImages.h"
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
 #include "config.h"
+#include "filter/operations.h"
 
 using namespace std;
 using namespace cimg_library;
@@ -29,7 +25,7 @@ using LTS::util::PerformanceTest;
 unique_ptr<Image> load_image(const string& input);
 void save_image(const Image& image, const string& file_name);
 void perform_test(const function<void()>& test_func, const Options& options);
-LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts);
+void linker_hack(Image* image, Image* output);
 
 
 int main(int argc, char* argv[])
@@ -39,30 +35,12 @@ int main(int argc, char* argv[])
     unique_ptr<Image> image {load_image(opts.input)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
-    #if USE_FACTORY
-
     LTS::framework::FilterFactory factory;
     auto filter = factory.create(opts.filter_spec);
 
     function<void()> test_func = ([&](){
         filter->process(image->data(), image->height(), image->width(), image->spectrum(), output.data());
     });
-
-    #else
-
-    unique_ptr<LTS::filter::ImageKernel> kernel;
-    try {
-        kernel = unique_ptr<LTS::filter::ImageKernel>{create_kernel(opts.filter, opts)};
-    } catch (invalid_argument& e) {
-        cout << e.what() << endl;
-        exit(1);
-    }
-
-    function<void()> test_func = ([&](){
-        kernel->process(image->data(), image->width(), image->height(), output.data(), image->spectrum());
-    });
-
-    #endif
 
     if (opts.test) {
         perform_test(test_func, opts);
@@ -72,6 +50,8 @@ int main(int argc, char* argv[])
 
     if (!opts.output_file.empty())
         save_image(output, opts.output_file);
+
+    linker_hack(image.get(), &output);
 }
 
 
@@ -155,22 +135,11 @@ void perform_test(const function<void()>& test_func, const Options& options)
 }
 
 
-LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts)
+void linker_hack(Image* image, Image* output)
 {
-    if (LTS::util::starts_with(name, "gaussian")) {
-        if (name == "gaussian")
-            return new LTS::filter::GaussianKernel;
-        if (name == "gaussian_v0")
-            return new LTS::filter::versions::GaussianKernel_v0;
-        if (name == "gaussian_v1")
-            return new LTS::filter::versions::GaussianKernel_v1;
-        if (name == "gaussian_v2")
-            return new LTS::filter::versions::GaussianKernel_v2;
-        if (name == "gaussian_v3")
-            return new LTS::filter::versions::GaussianKernel_v3;
-        if (name == "gaussian_v4")
-            return new LTS::filter::versions::GaussianKernel_v4;
-    }
-
-    throw invalid_argument("unrecognized filter type");
+    // HACK: Lines below only included to get linker to link this functions.
+    LTS::filter::KernelFast<float, 3, 3> temp;
+    LTS::filter::load_gaussian(temp);
+    LTS::filter::convolute(temp, image->data(), image->height(), image->width(), image->spectrum(), output->data());
+    LTS::filter::convolute(*dynamic_cast<LTS::filter::IKernel<float>*>(&temp), image->data(), image->height(), image->width(), image->spectrum(), output->data());
 }

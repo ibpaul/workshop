@@ -3,11 +3,6 @@ include_directories(${Workshop_SOURCE_DIR}/include)
 add_library(
     lts_filter
     gaussian.cpp
-    versions/gaussian_v0.cpp
-    versions/gaussian_v1.cpp
-    versions/gaussian_v2.cpp
-    versions/gaussian_v3.cpp
-    versions/gaussian_v4.cpp
     Kernel.cpp
     operations.cpp
 )
