@@ -3,7 +3,7 @@ Tools for developing algorithms.
 
 The [Quick Start](#quick-start) guide may be found below.
 
-Design documents may be found [here](doc/design.md)
+Design documents may be found [here](doc/design.md).
 
 ## Quick Start
 The project can be built and run with the following environments.
