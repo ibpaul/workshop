@@ -6,16 +6,18 @@ add_library(image TestImages.cpp)
 
 ## Google Test Setup ##########################################################
 
-add_executable(
-    image_test
-    TestImages_test.cpp
-)
+if (NOT DEFINED ZEPHYR_BASE)
+    add_executable(
+        image_test
+        TestImages_test.cpp
+    )
 
-target_link_libraries(
-    image_test
-    GTest::gtest_main
-    image
-)
+    target_link_libraries(
+        image_test
+        GTest::gtest_main
+        image
+    )
 
-include(GoogleTest)
-gtest_discover_tests(image_test)
+    include(GoogleTest)
+    gtest_discover_tests(image_test)
+endif()

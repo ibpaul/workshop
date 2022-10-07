@@ -1,0 +1,9 @@
+@startuml
+
+[*] --> Initialize
+
+Initialize --> Run
+
+Run --> Run : [continuous]\nfilter image\noutput performance results
+
+@enduml
