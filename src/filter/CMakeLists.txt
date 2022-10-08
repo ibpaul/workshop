@@ -35,7 +35,12 @@ if (NOT DEFINED ZEPHYR_BASE)
         lts_filter
         lts_image
         lts_util
+        png_static
+        zlibstatic
     )
+
+    include_directories(${Workshop_SOURCE_DIR}/libs/CImg)
+    include_directories(${Workshop_SOURCE_DIR}/libs/libpng)
 
     include(GoogleTest)
     gtest_discover_tests(filter_test)

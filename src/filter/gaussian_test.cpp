@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
+#include "CImg.h"
 #include "image/TestImages.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 
+using namespace cimg_library;
+using Image = CImg<unsigned char>;
 using lts::filter::KernelFast;
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
@@ -102,4 +105,32 @@ TEST(gaussian_test, kernel3x3) {
             EXPECT_NEAR(expected[m][n], k.w[m][n], 0.00001);
         }
     }
+}
+
+TEST(gaussian_test, peppers_3x3_gaussian) {
+    // Verifies our 3x3 gaussian filter processes the data/peppers.png image correctly.
+    KernelFast<float, 3, 3> k;
+    Image input("data/peppers.png");
+    Image output(input.width(), input.height(), input.depth(), input.spectrum());
+    Image expected("data/test/peppers_3x3_gaussian.png");
+
+    load_gaussian(k);
+    convolute(k, &input[0], input.height(), input.width(), input.spectrum(), &output[0]);
+
+    EXPECT_TRUE(output == expected);
+}
+
+TEST(gaussian_test, peppers_3x3_gaussian_one_threaded) {
+    // Verifies our 3x3 gaussian filter processes the data/peppers.png image correctly.
+    KernelFast<float, 3, 3> k;
+    Image input("data/peppers.png");
+    Image output(input.width(), input.height(), input.depth(), input.spectrum());
+    Image expected("data/test/peppers_3x3_gaussian.png");
+
+    load_gaussian(k);
+    convolute_threaded(1, k, &input[0], input.height(), input.width(), input.spectrum(), &output[0]);
+
+    output.save("results.png");
+
+    EXPECT_TRUE(output == expected);
 }

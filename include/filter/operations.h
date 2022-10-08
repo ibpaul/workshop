@@ -5,6 +5,8 @@
 
 #include <cstddef>
 #include <memory>
+#include <future>
+#include <vector>
 #include "filter/Kernel.h"
 
 namespace lts {
@@ -94,6 +96,41 @@ void convolute(
     size_t channels,
     uint8_t* output
 );
+
+
+// Performs threaded convolution.
+template<typename Tkernel, size_t Mkernel, size_t Nkernel>
+void convolute_threaded(
+    size_t num_threads,
+    const KernelFast<Tkernel, Mkernel, Nkernel>& kernel,
+    const uint8_t* input,
+    size_t ncols,
+    size_t nrows,
+    size_t channels,
+    uint8_t* output
+)
+{
+    std::vector<std::future<int>> funcs;
+    for (size_t i = 0; i < num_threads; ++i) {
+        auto offset = i * (nrows / num_threads) * ncols * channels;
+
+        funcs.push_back(
+            std::move(std::async(
+                convolute<Tkernel, Mkernel, Nkernel>,
+                kernel,
+                input + offset,
+                ncols,
+                nrows / num_threads,
+                channels,
+                output + offset
+            )
+        ));
+    }
+
+    for (auto& future : funcs) {
+        future.get();
+    }
+}
 
 
 }
