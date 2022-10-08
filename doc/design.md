@@ -3,6 +3,7 @@
  - [Images](design/images.md)
  - [Kernel](design/kernel.md)
  - [Gaussian Kernel](design/gaussian_kernel.md)
+ - [Process Functions](design/process_functions.md)
  - [Filter Factory](design/filter_factory.md)
  - __Tools__
    - [Zephyr Filter](design/zephyr_filter_tool.md)
