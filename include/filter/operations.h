@@ -98,41 +98,6 @@ void convolute(
 );
 
 
-// Performs threaded convolution.
-template<typename Tkernel, size_t Mkernel, size_t Nkernel>
-void convolute_threaded(
-    size_t num_threads,
-    const KernelFast<Tkernel, Mkernel, Nkernel>& kernel,
-    const uint8_t* input,
-    size_t ncols,
-    size_t nrows,
-    size_t channels,
-    uint8_t* output
-)
-{
-    std::vector<std::future<void>> funcs;
-    for (size_t i = 0; i < num_threads; ++i) {
-        auto offset = i * (nrows / num_threads) * ncols * channels;
-
-        funcs.push_back(
-            std::move(std::async(
-                convolute<Tkernel, Mkernel, Nkernel>,
-                kernel,
-                input + offset,
-                ncols,
-                nrows / num_threads,
-                channels,
-                output + offset
-            )
-        ));
-    }
-
-    for (auto& future : funcs) {
-        future.get();
-    }
-}
-
-
 // Performs convolution over a specified range of rows in an image, known as the work area.
 //
 // [parameters]
@@ -261,6 +226,78 @@ void convolute_work_area(
                 output[y*ncols*channels + x*channels + i] = static_cast<uint8_t>(new_pixel[i]);
             }
         }
+    }
+}
+
+
+// Performs threaded convolution.
+template<typename Tkernel, size_t Mkernel, size_t Nkernel>
+void convolute_threaded(
+    size_t num_threads,
+    const KernelFast<Tkernel, Mkernel, Nkernel>& kernel,
+    const uint8_t* input,
+    size_t ncols,
+    size_t nrows,
+    size_t channels,
+    uint8_t* output
+)
+{
+    std::vector<std::future<void>> funcs;
+    for (size_t i = 0; i < num_threads; ++i) {
+        funcs.push_back(
+            std::move(std::async(
+                convolute_work_area<Tkernel, Mkernel, Nkernel>,
+                kernel,
+                input,
+                ncols,
+                nrows,
+                channels,
+                output,
+                nrows * i / num_threads,
+                nrows * (i + 1) / num_threads
+            )
+        ));
+    }
+
+    for (auto& future : funcs) {
+        future.get();
+    }
+}
+
+// Performs threaded convolution.
+template<typename Tkernel>
+void convolute_threaded(
+    size_t num_threads,
+    const IKernel<Tkernel>& kernel,
+    const uint8_t* input,
+    size_t ncols,
+    size_t nrows,
+    size_t channels,
+    uint8_t* output
+)
+{
+    throw std::exception();
+
+    std::vector<std::future<void>> funcs;
+    for (size_t i = 0; i < num_threads; ++i) {
+        // NOTE: I have been unable to get the commented out section below to compile.
+        /*funcs.push_back(
+            std::move(std::async(
+                convolute_work_area<Tkernel>,
+                kernel,
+                input,
+                ncols,
+                nrows,
+                channels,
+                output,
+                nrows * i / num_threads,
+                nrows * (i + 1) / num_threads
+            )
+        ));*/
+    }
+
+    for (auto& future : funcs) {
+        future.get();
     }
 }
 

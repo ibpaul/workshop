@@ -229,15 +229,74 @@ TEST(gaussian_test, peppers_3x3_gaussian) {
 }
 
 
-TEST(gaussian_test, peppers_3x3_gaussian_one_threaded) {
-    // Verifies our 3x3 gaussian filter processes the data/peppers.png image correctly.
+void test_peppers_KernelFast3x3_threaded(size_t numOfThreads)
+{
     KernelFast<float, 3, 3> k;
     Image input("data/peppers.png");
     Image output(input.width(), input.height(), input.depth(), input.spectrum());
     Image expected("data/test/peppers_3x3_gaussian.png");
 
     load_gaussian(k);
-    convolute_threaded(1, k, &input[0], input.height(), input.width(), input.spectrum(), &output[0]);
+    convolute_threaded(numOfThreads, k, &input[0], input.height(), input.width(), input.spectrum(), &output[0]);
 
     output.save("results.png");
+}
+
+
+void test_peppers_Kernel3x3_threaded(size_t numOfThreads)
+{
+    Kernel<float> k {3, 3};
+    Image input("data/peppers.png");
+    Image output(input.width(), input.height(), input.depth(), input.spectrum());
+    Image expected("data/test/peppers_3x3_gaussian.png");
+
+    load_gaussian(k);
+    convolute_threaded(numOfThreads, k, &input[0], input.height(), input.width(), input.spectrum(), &output[0]);
+
+    output.save("results.png");
+}
+
+
+TEST(gaussian_test, peppers_KernelFast3x3_gaussian_one_threaded) {
+    // Verifies our 3x3 gaussian filter processes the data/peppers.png image correctly when processed with 1 thread.
+    test_peppers_KernelFast3x3_threaded(1);
+}
+
+
+TEST(gaussian_test, peppers_Kernel3x3_gaussian_one_threaded) {
+    // Verifies our Kernel3x3 gaussian filter processes the data/peppers.png image correctly when processed with 1 thread.
+    GTEST_SKIP() << "under test functions not fully implemented";
+    test_peppers_Kernel3x3_threaded(1);
+}
+
+
+TEST(gaussian_test, peppers_KernelFast3x3_gaussian_two_threads) {
+    // Verifies our KernelFast3x3 gaussian filter processes the data/peppers.png image correctly when processed with 2 threads.
+    // NOTE: This ensures that the adjacent work areas include image pixels instead of extending from the edge of the
+    //       work area.
+    test_peppers_KernelFast3x3_threaded(2);
+}
+
+
+TEST(gaussian_test, peppers_Kernel3x3_gaussian_two_threads) {
+    // Verifies our Kernel3x3 gaussian filter processes the data/peppers.png image correctly when processed with 2 threads.
+    // NOTE: This ensures that the adjacent work areas include image pixels instead of extending from the edge of the
+    //       work area.
+    GTEST_SKIP() << "under test functions not fully implemented";
+    test_peppers_Kernel3x3_threaded(2);
+}
+
+
+TEST(gaussian_test, peppers_KernelFast3x3_gaussian_three_threads) {
+    // Verifies our KernelFast3x3 gaussian filter processes the data/peppers.png image correctly when processed with 2 threads.
+    // NOTE: Tests if our bound calculations don't skip some rows.
+    test_peppers_KernelFast3x3_threaded(3);
+}
+
+
+TEST(gaussian_test, peppers_Kernel3x3_gaussian_three_threads) {
+    // Verifies our Kernel3x3 gaussian filter processes the data/peppers.png image correctly when processed with 2 threads.
+    // NOTE: Tests if our bound calculations don't skip some rows.
+    GTEST_SKIP() << "under test functions not fully implemented";
+    test_peppers_Kernel3x3_threaded(3);
 }
