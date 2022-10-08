@@ -106,6 +106,7 @@ like `vertical-lines{512,512}`.
 
 __Available Test Patterns__
  - `vertical-lines`
+ - `horizontal-lines`
 
 ## Output File
 The output file is optional and specifies where to save the processed file. This

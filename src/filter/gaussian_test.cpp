@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "CImg.h"
-#include "image/TestImages.h"
+#include "image/patterns.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 
