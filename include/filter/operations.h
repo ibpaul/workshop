@@ -24,9 +24,9 @@ namespace filter {
 // [notes]
 //  - This convolution implementation may not be mathematically pure since it does not involve
 //    flipping of the kernel's matrix.
-template<typename Tkernel, size_t Nkernel, size_t Mkernel>
+template<typename Tkernel, size_t Mkernel, size_t Nkernel>
 void convolute(
-    const KernelFast<Tkernel, Nkernel, Mkernel>& kernel,
+    const KernelFast<Tkernel, Mkernel, Mkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
