@@ -266,7 +266,7 @@ void convolute_threaded(
 
 // Performs threaded convolution.
 template<typename Tkernel>
-void convolute_threaded(
+void convolute_threaded_generic(
     size_t num_threads,
     const IKernel<Tkernel>& kernel,
     const uint8_t* input,
@@ -276,7 +276,7 @@ void convolute_threaded(
     uint8_t* output
 )
 {
-    throw std::exception();
+    throw std::runtime_error("not implemented");
 
     std::vector<std::future<void>> funcs;
     for (size_t i = 0; i < num_threads; ++i) {

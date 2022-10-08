@@ -8,6 +8,7 @@ using namespace cimg_library;
 using Image = CImg<unsigned char>;
 using lts::filter::KernelFast;
 using lts::filter::Kernel;
+using lts::filter::IKernel;
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 
@@ -251,7 +252,15 @@ void test_peppers_Kernel3x3_threaded(size_t numOfThreads)
     Image expected("data/test/peppers_3x3_gaussian.png");
 
     load_gaussian(k);
-    convolute_threaded(numOfThreads, k, &input[0], input.height(), input.width(), input.spectrum(), &output[0]);
+    lts::filter::convolute_threaded_generic<float>(
+        numOfThreads,
+        static_cast<IKernel<float>&>(k),
+        &input[0],
+        input.height(),
+        input.width(),
+        input.spectrum(),
+        &output[0]
+    );
 
     output.save("results.png");
 }
