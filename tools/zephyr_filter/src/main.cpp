@@ -37,21 +37,20 @@ int main(void)
 	//int ret;
 
     LTS::filter::KernelFast<float, 3, 3> kernel;
-    //LTS::filter::load_gaussian(kernel);
+    LTS::filter::load_gaussian(kernel);
 
-    //auto input = LTS::image::vertical_lines(256, 256, 1);
+    auto input = LTS::image::vertical_lines(256, 256, 1);
 
-    //auto start = HAL_GetTick();
-    //LTS::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
+    auto start = HAL_GetTick();
+    LTS::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
     //LTS::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
-    //auto end = HAL_GetTick();
-    //auto diff = end - start;
+    auto end = HAL_GetTick();
+    auto diff = end - start;
 
     char time_buffer[30];
     //snprintf(time_buffer, 20, "%d ms\r\n", diff);
 
-    printk("Hello World!\n");
-    //printk("Hello World! %s\n", diff);
+    printk("Hello World! %d ms\n", diff);
 
 
 	if (!device_is_ready(led.port)) {

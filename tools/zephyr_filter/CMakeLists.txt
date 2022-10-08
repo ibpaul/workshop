@@ -8,4 +8,4 @@ add_subdirectory("../../src/filter" "${CMAKE_CURRENT_BINARY_DIR}/lts/filter")
 add_subdirectory("../../src/image" "${CMAKE_CURRENT_BINARY_DIR}/lts/image")
 add_subdirectory("../../src/util" "${CMAKE_CURRENT_BINARY_DIR}/lts/util")
 
-target_link_libraries(app PUBLIC lts_filter image util)
+target_link_libraries(app PUBLIC lts_filter lts_util lts_image)
