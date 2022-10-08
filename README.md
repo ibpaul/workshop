@@ -1,16 +1,21 @@
 # Workshop
 Tools for developing algorithms.
 
-The [Quick Start](#quick-start) guide may be found below.
+The [Quick Start](#quick-start---filter-tool) guide may be found below.
 
 Design documents may be found [here](doc/design.md).
 
-## Quick Start
-The project can be built and run with the following environments.
+## Quick Start - Filter Tool
+This guide walks you through building the useful *filter* tool to process a
+simple gaussian blur on an input image.
 
- - Windows - Visual Studio 2022
- - Windows - CLion 2022.2.3
- - Ubuntu 22.04 LTS
+Details of the *filter* tool may be found [here](doc/tools/filter.md).
+
+The project can be built and run on the following environments.
+
+ - [Windows - Visual Studio 2022](#visual-studio)
+ - [Windows - CLion 2022.2.3](#clion)
+ - [Linux - Ubuntu 22.04 LTS](#ubuntu)
 
 ### Visual Studio
 
