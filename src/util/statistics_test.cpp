@@ -4,7 +4,7 @@
 
 using std::vector;
 using std::pair;
-using namespace LTS::util;
+using namespace lts::util;
 
 
 TEST(UTILS_TEST, StatisticsMean1) {

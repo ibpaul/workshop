@@ -3,16 +3,16 @@
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 
-using LTS::filter::KernelFast;
-using LTS::filter::load_gaussian;
-using LTS::filter::convolute;
+using lts::filter::KernelFast;
+using lts::filter::load_gaussian;
+using lts::filter::convolute;
 
 TEST(gaussian_test, GaussianFilterOn10x10MonochromeVerticalLinesImage) {
     constexpr int width = 10;
     constexpr int height = 10;
     constexpr int channels = 1;
 
-    auto image = LTS::image::vertical_lines(width, height, channels);
+    auto image = lts::image::vertical_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
     KernelFast<float, 3, 3> k;
@@ -50,7 +50,7 @@ TEST(gaussian_test, GaussianFilterOn10x10RGBVerticalLinesImage) {
     constexpr int height = 10;
     constexpr int channels = 3;
 
-    auto image = LTS::image::vertical_lines(width, height, channels);
+    auto image = lts::image::vertical_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
     KernelFast<float, 3, 3> k;

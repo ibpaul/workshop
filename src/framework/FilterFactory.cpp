@@ -10,15 +10,15 @@
 #include "util/string.h"
 
 using namespace std;
-using LTS::filter::KernelFast;
-using LTS::filter::Kernel;
-using LTS::filter::IKernel;
-using LTS::filter::load_gaussian;
-using LTS::filter::convolute;
-using LTS::util::starts_with;
-using LTS::util::split;
+using lts::filter::KernelFast;
+using lts::filter::Kernel;
+using lts::filter::IKernel;
+using lts::filter::load_gaussian;
+using lts::filter::convolute;
+using lts::util::starts_with;
+using lts::util::split;
 
-namespace LTS {
+namespace lts {
 namespace framework {
 
 

@@ -7,7 +7,7 @@
 #include "framework/IFilter.h"
 #include "filter/Kernel.h"
 
-namespace LTS {
+namespace lts {
 namespace framework {
 
 

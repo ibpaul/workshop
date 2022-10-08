@@ -7,7 +7,7 @@ TEST(IMAGE_TEST, Generate10x10LinearTestImage) {
     constexpr int height = 10;
     constexpr int channels = 1;
 
-    auto image = LTS::image::vertical_lines(width, height, channels);
+    auto image = lts::image::vertical_lines(width, height, channels);
 
     uint8_t expected[] = {
         0, 255, 0, 255, 0, 255, 0, 255, 0, 255,
@@ -31,7 +31,7 @@ TEST(IMAGE_TEST, Generate10x10Channel3LinearTestImage) {
     constexpr int height = 10;
     constexpr int channels = 3;
 
-    auto image = LTS::image::vertical_lines(width, height, channels);
+    auto image = lts::image::vertical_lines(width, height, channels);
 
     uint8_t expected[] = {
             0, 0, 0, 255, 255, 255, 0, 0, 0, 255, 255, 255, 0, 0, 0, 255, 255, 255, 0, 0, 0, 255, 255, 255, 0, 0, 0, 255, 255, 255,
@@ -55,7 +55,7 @@ TEST(IMAGE_TEST, Generate3x3LinearTestImage) {
     constexpr size_t height = 3;
     constexpr int channels = 1;
 
-    auto image = LTS::image::vertical_lines(width, height, channels);
+    auto image = lts::image::vertical_lines(width, height, channels);
 
     uint8_t expected[] = {
         0, 255, 0, 255, 0,

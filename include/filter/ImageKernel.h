@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace LTS {
+namespace lts {
 namespace filter {
 
 class ImageKernel {

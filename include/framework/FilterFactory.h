@@ -7,7 +7,7 @@
 #include <string>
 #include "framework/IFilter.h"
 
-namespace LTS {
+namespace lts {
 namespace framework {
 
 

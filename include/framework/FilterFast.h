@@ -7,7 +7,7 @@
 #include "framework/IFilter.h"
 #include "filter/Kernel.h"
 
-namespace LTS {
+namespace lts {
 namespace framework {
 
 template<typename T, size_t M, size_t N>

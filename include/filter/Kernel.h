@@ -8,7 +8,7 @@
 #include <memory>
 #include "optimize_flags.h"
 
-namespace LTS {
+namespace lts {
 namespace filter {
 
 

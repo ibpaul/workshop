@@ -86,7 +86,7 @@ void process_test_options(cxxopts::ParseResult& result, Options& opts)
     opts.test = true;
 
     auto test_params_str = result["test"].as<string>();
-    auto params = LTS::util::split(test_params_str, ',');
+    auto params = lts::util::split(test_params_str, ',');
 
     if (!params.empty()) {
         if (params.size() > 2) {

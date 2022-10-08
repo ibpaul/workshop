@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 vector<string> split(const string& str, char delim)

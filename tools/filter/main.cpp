@@ -19,7 +19,7 @@ using namespace std;
 using namespace cimg_library;
 
 using Image = CImg<unsigned char>;
-using LTS::util::PerformanceTest;
+using lts::util::PerformanceTest;
 
 
 unique_ptr<Image> load_image(const string& input);
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     unique_ptr<Image> image {load_image(opts.input)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
-    LTS::framework::FilterFactory factory;
+    lts::framework::FilterFactory factory;
     auto filter = factory.create(opts.filter_spec);
 
     function<void()> test_func = ([&](){
@@ -55,8 +55,8 @@ int main(int argc, char* argv[])
 unique_ptr<Image> load_image(const string& input)
 {
     // Check if any standard test patterns were specified.
-    if (LTS::util::starts_with(input, "vertical-lines")) {
-        vector<string> elements = LTS::util::split(input, {',', '{', '}'});
+    if (lts::util::starts_with(input, "vertical-lines")) {
+        vector<string> elements = lts::util::split(input, {',', '{', '}'});
         queue<string> q;
         for (auto& e : elements)
             q.push(e);
@@ -84,7 +84,7 @@ unique_ptr<Image> load_image(const string& input)
         }
 
         auto image = make_unique<Image>(width, height, 1, channels);
-        LTS::image::vertical_lines(image->data(), width, height, channels);
+        lts::image::vertical_lines(image->data(), width, height, channels);
         return image;
     }
 

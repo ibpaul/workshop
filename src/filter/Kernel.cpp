@@ -1,6 +1,6 @@
 #include "filter/Kernel.h"
 
-namespace LTS {
+namespace lts {
 namespace filter {
 
 

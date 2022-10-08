@@ -5,7 +5,7 @@
 
 #include "filter/Kernel.h"
 
-namespace LTS {
+namespace lts {
 namespace filter {
 
 void load_gaussian(IKernel<float>& kernel);

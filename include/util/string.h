@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 // Splits a string up using the supplied deliminator.

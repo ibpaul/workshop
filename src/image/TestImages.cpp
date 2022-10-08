@@ -1,6 +1,6 @@
 #include "image/TestImages.h"
 
-namespace LTS {
+namespace lts {
 namespace image {
 
 

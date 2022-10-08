@@ -1,6 +1,6 @@
 #include "Image.h"
 
-namespace LTS {
+namespace lts {
 
 
 Image::Image(std::string filename)

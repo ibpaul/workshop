@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace LTS {
+namespace lts {
 namespace filter {
 
 

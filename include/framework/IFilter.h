@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-namespace LTS {
+namespace lts {
 namespace framework {
 
 class IFilter {

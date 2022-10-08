@@ -3,7 +3,7 @@
 constexpr float pi_f = 3.14159265358979323846f;
 constexpr float e_f = 2.718281828459045;
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 
