@@ -27,6 +27,7 @@ if (NOT DEFINED ZEPHYR_BASE)
     add_executable(
         filter_test
         gaussian_test.cpp
+        operations_test.cpp
     )
 
     target_link_libraries(

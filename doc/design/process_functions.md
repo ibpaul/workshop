@@ -34,7 +34,7 @@ processing since the image can be divided into regions easily.
        - `output data` - This is also provided as a pointer and needs the same adjustment
          as `input data`.
 
-__Image Work Areas__
+__Image Work Areas__ \
 ![Image Work Areas](diagram/image_work_areas.svg)
 
  - Current plan is to have `convolute_thread` create the threads via the `async()`
@@ -52,3 +52,9 @@ __Image Work Areas__
      value could be expanded to return various error types by flag bits. Probably still
      won't have much information or control over which individual thread caused the
      issue.
+ - When processing pixels on the edges of an image, the kernel overhangs and uses pixel
+   values extended from the edge. This complicates the process of using multiple threads
+   to process their work areas because a simple reuse of our single-threaded convolute
+   makes the kernel make up pixels that extend beyond the work area yet are still within
+   the image. This requires a tweak or rewrite of our convolute function to use these
+   existing values even though they extend just beyond the assigned work area.
