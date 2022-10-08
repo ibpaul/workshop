@@ -23,9 +23,9 @@ public:
           _process(process)
     { }
 
-    void process(uint8_t *data, size_t height, size_t width, size_t channels, uint8_t *output) override
+    void process(uint8_t *data, size_t width, size_t height, size_t channels, uint8_t *output) override
     {
-        _process(*_kernel, data, height, width, channels, output);
+        _process(*_kernel, data, width, height, channels, output);
     }
 
 private:
