@@ -110,7 +110,7 @@ void convolute_threaded(
     uint8_t* output
 )
 {
-    std::vector<std::future<int>> funcs;
+    std::vector<std::future<void>> funcs;
     for (size_t i = 0; i < num_threads; ++i) {
         auto offset = i * (nrows / num_threads) * ncols * channels;
 
