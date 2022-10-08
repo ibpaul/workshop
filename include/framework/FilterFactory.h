@@ -15,6 +15,7 @@ class FilterFactory
 {
 public:
     std::unique_ptr<IFilter> create(const std::string& spec);
+    std::unique_ptr<IFilter> create(const std::string& spec, int num_threads);
 };
 
 

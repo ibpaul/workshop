@@ -36,7 +36,14 @@ int main(int argc, char* argv[])
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
     lts::framework::FilterFactory factory;
-    auto filter = factory.create(opts.filter_spec);
+    std::unique_ptr<lts::framework::IFilter> filter;
+
+    try {
+        filter = factory.create(opts.filter_spec, opts.threads);
+    } catch (exception& e) {
+        cout << e.what() << endl;
+        exit(1);
+    }
 
     function<void()> test_func = ([&](){
         filter->process(image->data(), image->height(), image->width(), image->spectrum(), output.data());

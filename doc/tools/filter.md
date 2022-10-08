@@ -111,3 +111,16 @@ __Available Test Patterns__
 ## Output File
 The output file is optional and specifies where to save the processed file. This
 must follow the input data parameter.
+
+
+## Filter Multi-Threading
+The filter processing can be flagged to run in multi-threaded mode. This is different from
+the threading provided during testing, because now the data processing is using multiple
+threads to process the data. You can flag multi-threaded mode with a flag option like: \
+\
+`--threads=2`
+
+This flag signals to use 2 threads to process the data.
+
+Note that some configurations of filter types and kernel sizes may not support multi-threading
+and the program will respond with an error.

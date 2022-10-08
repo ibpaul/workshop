@@ -15,6 +15,7 @@ struct Options {
     int num_test_cycles {1};
     int num_test_threads {1};
     std::string filter_spec;
+    int threads {0};
 };
 
 // Process and determine all command-line options provided. Will call printer error and call exit() for invalid
