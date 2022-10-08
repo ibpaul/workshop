@@ -2,13 +2,14 @@
 #include <functional>
 #include <memory>
 #include <queue>
+#include <map>
 
 // Hide error message reporting from CImg.
 #define cimg_verbosity 0
 #include "CImg.h"
 #include "framework/FilterFactory.h"
 #include "filter/gaussian.h"
-#include "image/TestImages.h"
+#include "image/patterns.h"
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
@@ -54,24 +55,30 @@ int main(int argc, char* argv[])
 
 unique_ptr<Image> load_image(const string& input)
 {
+    map<string, void(*)(uint8_t*, size_t, size_t, size_t)> patterns;
+    patterns["vertical-lines"] = lts::image::vertical_lines;
+    patterns["horizontal-lines"] = lts::image::horizontal_lines;
+
+    auto elements = lts::util::split(input, {',', '{', '}'});
+
     // Check if any standard test patterns were specified.
-    if (lts::util::starts_with(input, "vertical-lines")) {
-        vector<string> elements = lts::util::split(input, {',', '{', '}'});
+    if (patterns.find(elements[0]) != patterns.end()) {
         queue<string> q;
         for (auto& e : elements)
             q.push(e);
 
+        auto pattern = q.front();
         q.pop();
 
         if (q.empty()) {
-            cout << "width must be specified for vertical-lines" << endl;
+            cout << "width must be specified for " << pattern << endl;
             exit(1);
         }
         auto width = stoi(q.front());
         q.pop();
 
         if (q.empty()) {
-            cout << "height must be specified for vertical-lines" << endl;
+            cout << "height must be specified for " << pattern << endl;
             exit(1);
         }
         auto height = stoi(q.front());
@@ -84,7 +91,7 @@ unique_ptr<Image> load_image(const string& input)
         }
 
         auto image = make_unique<Image>(width, height, 1, channels);
-        lts::image::vertical_lines(image->data(), width, height, channels);
+        patterns[pattern](image->data(), width, height, channels);
         return image;
     }
 

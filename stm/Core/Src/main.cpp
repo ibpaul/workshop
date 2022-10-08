@@ -27,7 +27,7 @@
 #include "filter/Kernel.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
-#include "image/TestImages.h"
+#include "image/patterns.h"
 #include "usbd_cdc_if.h"
 
 using namespace std::chrono;

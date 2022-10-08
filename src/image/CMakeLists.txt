@@ -12,7 +12,7 @@ if (NOT DEFINED ZEPHYR_BASE)
 endif()
 
 set(SOURCES
-    TestImages.cpp
+    patterns.cpp
 )
 
 if (DEFINED ZEPHYR_BASE)
@@ -31,7 +31,7 @@ endif()
 if (NOT DEFINED ZEPHYR_BASE)
     add_executable(
         image_test
-        TestImages_test.cpp
+        patterns_test.cpp
     )
 
     target_link_libraries(

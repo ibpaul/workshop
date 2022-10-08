@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "image/TestImages.h"
+#include "image/patterns.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 

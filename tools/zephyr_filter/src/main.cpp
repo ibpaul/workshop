@@ -9,7 +9,7 @@
 #include "filter/Kernel.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
-#include "image/TestImages.h"
+#include "image/patterns.h"
 
 //using namespace std::chrono;
 
