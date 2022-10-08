@@ -38,8 +38,8 @@ void convolute(
 {
     std::unique_ptr<float[]> new_pixel { new float[channels] };
 
-    for (size_t x = 0; x < ncols; ++x) {
-        for (size_t y = 0; y < nrows; ++y) {
+    for (size_t y = 0; y < nrows; ++y) {
+        for (size_t x = 0; x < ncols; ++x) {
             std::fill_n(new_pixel.get(), channels, static_cast<float>(0.0f));
 
             for (int ky = 0; ky < Mkernel; ++ky) {

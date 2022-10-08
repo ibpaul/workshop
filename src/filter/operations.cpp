@@ -25,8 +25,8 @@ void convolute(
 
     unique_ptr<float[]> new_pixel { new float[channels] };
 
-    for (size_t x = 0; x < ncols; ++x) {
-        for (size_t y = 0; y < nrows; ++y) {
+    for (size_t y = 0; y < nrows; ++y) {
+        for (size_t x = 0; x < ncols; ++x) {
             fill_n(new_pixel.get(), channels, static_cast<float>(0.0f));
 
             #if OPTIMIZE_1 || OPTIMIZE_2
