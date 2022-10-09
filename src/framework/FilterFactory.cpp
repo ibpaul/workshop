@@ -14,6 +14,7 @@ using namespace std;
 using lts::filter::KernelFast;
 using lts::filter::Kernel;
 using lts::filter::IKernel;
+using lts::filter::KernelEigen;
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 using lts::util::starts_with;
@@ -47,6 +48,46 @@ std::unique_ptr<IFilter> make_fast_filter(int num_threads)
 }
 
 
+map<string, bool> FilterFactory::process_use_flags(queue<string>& params)
+{
+    map<string, bool> use_flags {
+        {"nofast", false},
+        {"eigen", false}
+    };
+
+    while (!params.empty()) {
+        auto p = params.front();
+        params.pop();
+
+        if (use_flags.find(p) == use_flags.end()) {
+            throw runtime_error("unrecognized filter option '" + p + "'");
+        }
+
+        use_flags[p] = true;
+    }
+
+    return use_flags;
+}
+
+
+pair<size_t, size_t> FilterFactory::process_matrix_sizing(queue<string>& params, const string& spec)
+{
+    if (params.empty()) {
+        throw invalid_argument("no kernel size specified in '" + spec + "'");
+    }
+    auto size_m = static_cast<size_t>(stoi(params.front()));
+    params.pop();
+
+    if (params.empty()) {
+        throw invalid_argument("only 2-dimensional kernels supported at the time");
+    }
+    auto size_n = static_cast<size_t>(stoi(params.front()));
+    params.pop();
+
+    return make_pair(size_m, size_n);
+}
+
+
 std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_threads)
 {
     map<string, int> patterns {
@@ -64,38 +105,33 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
         throw invalid_argument("cannot process filter specification of '" + spec + "'");
     }
 
-    if (q.empty()) {
-        throw invalid_argument("no kernel size specified in '" + spec + "'");
-    }
-    auto size_m = static_cast<size_t>(stoi(q.front()));
-    q.pop();
+    auto size = process_matrix_sizing(q, spec);
 
-    if (q.empty()) {
-        throw invalid_argument("only 2-dimensional kernels supported at the time");
-    }
-    auto size_n = static_cast<size_t>(stoi(q.front()));
-    q.pop();
+    auto flags = process_use_flags(q);
 
-    bool use_no_fast = false;
-    if (!q.empty()) {
-        auto p = q.front();
-        if (p == "nofast") {
-            use_no_fast = true;
-            q.pop();
+    if (flags["eigen"]) {
+        if (flags["nofast"]) {
+            throw runtime_error("options 'eigen' and 'nofast' can not be used together");
         }
-    }
 
-    // See if we can make a FilterFast.
-    if (size_m == size_n && !use_no_fast) {
-        if (size_m == 3)
+        unique_ptr<IKernel<float>> kernel {new KernelEigen<float>{size.first, size.second}};
+        load_gaussian(*kernel);
+
+        return unique_ptr<IFilter>(new Filter<float>(
+            std::move(kernel),
+            &convolute
+        ));
+    } else if (size.first == size.second && !flags["nofast"]) {
+        // We can make a FilterFast.
+        if (size.first == 3)
             return make_fast_filter<3>(num_threads);
-        if (size_m == 5)
+        if (size.first == 5)
             return make_fast_filter<5>(num_threads);
-        if (size_m == 7)
+        if (size.first == 7)
             return make_fast_filter<7>(num_threads);
-        if (size_m == 9)
+        if (size.first == 9)
             return make_fast_filter<9>(num_threads);
-        if (size_m == 11)
+        if (size.first == 11)
             return make_fast_filter<11>(num_threads);
     }
 
@@ -105,7 +141,7 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
     }
 
     // Fallback on making a normal Filter.
-    unique_ptr<IKernel<float>> kernel {new Kernel<float>{size_m, size_n}};
+    unique_ptr<IKernel<float>> kernel {new Kernel<float>{size.first, size.second}};
     load_gaussian(*kernel);
 
     return unique_ptr<IFilter>(new Filter<float>(

@@ -5,6 +5,8 @@
 
 #include <memory>
 #include <string>
+#include <map>
+#include <queue>
 #include "framework/IFilter.h"
 
 namespace lts {
@@ -14,8 +16,12 @@ namespace framework {
 class FilterFactory
 {
 public:
-    std::unique_ptr<IFilter> create(const std::string& spec);
-    std::unique_ptr<IFilter> create(const std::string& spec, int num_threads);
+    static std::unique_ptr<IFilter> create(const std::string& spec);
+    static std::unique_ptr<IFilter> create(const std::string& spec, int num_threads);
+
+private:
+    static std::map<std::string, bool> process_use_flags(std::queue<std::string>& params);
+    static std::pair<size_t, size_t> process_matrix_sizing(std::queue<std::string>& params, const std::string& spec);
 };
 
 

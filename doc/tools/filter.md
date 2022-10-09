@@ -62,6 +62,13 @@ in your project, you can get this optimization by creating your own templated
 kernel class, say by using `KernelFast<float, 21, 21>` in your code for your favorite
 `21` x `21` kernel size.
 
+### Eigen Library
+Instead of using the built-in kernel structures and associated algorithms, the *filter*
+tool allows you to use structures and algorithms included in the [*Eigen library*](https://eigen.tuxfamily.org/index.php?title=Main_Page).
+This is specified in the filter type parameters with `eigen` like below: \
+\
+`--type gaussian{5,5,eigen}`
+
 
 ## Performance Testing
 You enable performance testing by configuring the `--test` flag. You provide
