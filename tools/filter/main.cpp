@@ -21,6 +21,7 @@ using namespace cimg_library;
 
 using Image = CImg<unsigned char>;
 using lts::util::PerformanceTest;
+using lts::framework::FilterFactory;
 
 
 unique_ptr<Image> load_image(const string& input);
@@ -35,11 +36,10 @@ int main(int argc, char* argv[])
     unique_ptr<Image> image {load_image(opts.input)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
-    lts::framework::FilterFactory factory;
     std::unique_ptr<lts::framework::IFilter> filter;
 
     try {
-        filter = factory.create(opts.filter_spec, opts.threads);
+        filter = FilterFactory::create(opts.filter_spec, opts.threads);
     } catch (exception& e) {
         cout << e.what() << endl;
         exit(1);

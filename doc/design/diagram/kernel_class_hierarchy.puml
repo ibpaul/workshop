@@ -23,10 +23,19 @@ class Kernel<T> {
     - w : unique_ptr<T[]>
 }
 
+package "Eigen Library" {
+    class MatrixXd
+}
+
 class KernelEigen<T> {
     Data structures from the Eigen
     library are used.
+    ---
+    ctor(m, n)
+    ---
+    w : MatrixXd
 }
+
 
 IKernel <|-- KernelFast
 IKernel <|-- Kernel

@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include "Eigen/Dense"
 #include "optimize_flags.h"
 
 namespace lts {
@@ -79,6 +80,26 @@ private:
     size_t _m;
     size_t _n;
 };
+
+
+template<typename T>
+class KernelEigen : public IKernel<T> {
+public:
+    KernelEigen(size_t m, size_t n)
+        : w(m, n)
+    { }
+
+    size_t size_m() const override { return w.rows(); }
+    size_t size_n() const override { return w.cols(); }
+    T& at(size_t m, size_t n) override { return w(m, n); }
+    const T& at(size_t m, size_t n) const override { return w(m, n); }
+
+#if !OPTIMIZE_5
+private:
+#endif
+    Eigen::MatrixXf w;
+};
+
 
 
 }

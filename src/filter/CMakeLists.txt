@@ -1,7 +1,8 @@
 set(LIB_NAME lts_filter)
 
 set(INCLUDES
-    ../../include
+    ${Workshop_SOURCE_DIR}/include
+    ${Workshop_SOURCE_DIR}/libs/eigen
 )
 
 set(SOURCES

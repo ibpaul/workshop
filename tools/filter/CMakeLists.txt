@@ -1,5 +1,10 @@
-include_directories(${Workshop_SOURCE_DIR}/include)
-include_directories(${Workshop_SOURCE_DIR}/libs/cxxopts)
+set(INCLUDES
+    ${Workshop_SOURCE_DIR}/include
+    ${Workshop_SOURCE_DIR}/libs/cxxopts
+    ${Workshop_SOURCE_DIR}/libs/eigen
+)
+
+include_directories(${INCLUDES})
 
 add_executable(
 	filter
