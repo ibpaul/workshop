@@ -9,8 +9,8 @@ namespace filter {
 
 
 void convolute(
-    #if OPTIMIZE_5
-    const IKernel<float>& ikernel,
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::MatrixXf& kernel,
     #else
     const IMatrix<float>& kernel,
     #endif
@@ -46,8 +46,15 @@ void convolute(
             for (int ky = 0; ky < kernel._m; ++ky) {
                 for (int kx = 0; kx < kernel._n; ++kx) {
             #else
+
+            #ifdef LTS_EIGEN_MATRIX
+            for (int ky = 0; ky < kernel.rows(); ++ky) {
+                for (int kx = 0; kx < kernel.cols(); ++kx) {
+            #else
             for (int ky = 0; ky < kernel.size_m(); ++ky) {
                 for (int kx = 0; kx < kernel.size_n(); ++kx) {
+            #endif
+
             #endif
                     #if OPTIMIZE_1
                     auto kc = *kc_p++;
@@ -59,7 +66,12 @@ void convolute(
                     auto kc = kernel.w[ky * kernel._n + kx];
                     #else
                     //auto kc = kernel._weights[ky*kernel._ncols + kx];
+                    #ifdef LTS_EIGEN_MATRIX
+                    auto kc = kernel(ky, kx);
+                    #else
                     auto kc = kernel.at(ky, kx);
+                    #endif
+
                     #endif
 
                     #if OPTIMIZE_4
@@ -69,8 +81,15 @@ void convolute(
                     int input_x = static_cast<int>(x - kernel._n / 2 + kx);
                     int input_y = static_cast<int>(y - kernel._m / 2 + ky);
                     #else
+
+                    #ifdef LTS_EIGEN_MATRIX
+                    int input_x = static_cast<int>(x - kernel.cols() / 2 + kx);
+                    int input_y = static_cast<int>(y - kernel.rows() / 2 + ky);
+                    #else
                     int input_x = static_cast<int>(x - kernel.size_n() / 2 + kx);
                     int input_y = static_cast<int>(y - kernel.size_m() / 2 + ky);
+                    #endif
+
                     #endif
 
                     // Adjust input coordinate if kernel is overhanging the input image's side/top.

@@ -5,7 +5,12 @@
 #include <map>
 #include "framework/FilterFast.h"
 #include "framework/Filter.h"
+
+
+// TODO: Remove.
 #include "math/Matrix.h"
+
+
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "util/string.h"
@@ -25,26 +30,59 @@ namespace lts {
 namespace framework {
 
 
+#ifdef LTS_EIGEN_MATRIX
+// HACK: Would like to specify the matrices size as defined by the Eigen library.
+template<int S>
+#else
 template<size_t S>
+#endif
 std::unique_ptr<IFilter> make_fast_filter(int num_threads)
 {
+    #ifdef LTS_EIGEN_MATRIX
+    auto kernel = make_unique<Eigen::Matrix<float, S, S>>();
+    #else
     auto kernel = make_unique<MatrixFast<float, S, S>>();
+    #endif
+
     load_gaussian(*kernel);
 
     if (num_threads == 0) {
+        #ifdef LTS_EIGEN_MATRIX
         return unique_ptr<IFilter>(new FilterFast<float, S, S>(
             std::move(kernel),
             &convolute<float, S, S>
         ));
+        #else
+        return unique_ptr<IFilter>(new FilterFast<float, S, S>(
+            std::move(kernel),
+            &convolute<float, S, S>
+        ));
+        #endif
     } else {
+        #ifdef LTS_EIGEN_MATRIX
+        //throw runtime_error("not implemented");
+        // TODO: Convert to Eigen matrix.
+        auto func = [](const Eigen::Matrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
+            convolute_threaded(5, k, input, width, height, channels, output);
+        };
+        #else
         auto func = [](const math::MatrixFast<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
             convolute_threaded(5, k, input, width, height, channels, output);
         };
+        #endif
 
+        #ifdef LTS_EIGEN_MATRIX
+        // TODO: Convert to Eigen matrix.
         return unique_ptr<IFilter>(new FilterFast<float, S, S>(
             std::move(kernel),
             func
         ));
+        #else
+        return unique_ptr<IFilter>(new FilterFast<float, S, S>(
+            std::move(kernel),
+            func
+        ));
+        #endif
     }
 }
 
@@ -111,6 +149,9 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
     auto flags = process_use_flags(q);
 
     if (flags["eigen"]) {
+        #ifdef LTS_EIGEN_MATRIX
+        throw runtime_error("deprecated");
+        #else
         if (flags["nofast"]) {
             throw runtime_error("options 'eigen' and 'nofast' can not be used together");
         }
@@ -122,6 +163,7 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
             std::move(kernel),
             &convolute
         ));
+        #endif
     } else if (size.first == size.second && !flags["nofast"]) {
         // We can make a FilterFast.
         if (size.first == 3)
@@ -142,7 +184,13 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
     }
 
     // Fallback on making a normal Filter.
+    #ifdef LTS_EIGEN_MATRIX
+    auto kernel = make_unique<Eigen::MatrixXf>(size.first, size.second);
+    //unique_ptr<Eigen::MatrixXf> kernel {new Matrix<float>{size.first, size.second}};
+    #else
     unique_ptr<IMatrix<float>> kernel {new Matrix<float>{size.first, size.second}};
+    #endif
+
     load_gaussian(*kernel);
 
     return unique_ptr<IFilter>(new Filter<float>(

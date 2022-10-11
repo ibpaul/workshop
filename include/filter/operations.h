@@ -7,6 +7,9 @@
 #include <memory>
 #include <future>
 #include <vector>
+#include <Eigen/Dense>
+
+// TODO: Remove
 #include "math/Matrix.h"
 
 namespace lts {
@@ -28,7 +31,11 @@ namespace filter {
 //    flipping of the kernel's matrix.
 template<typename Tkernel, size_t Mkernel, size_t Nkernel>
 void convolute(
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::Matrix<Tkernel, Mkernel, Mkernel>& kernel,
+    #else
     const math::MatrixFast<Tkernel, Mkernel, Mkernel>& kernel,
+    #endif
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -44,7 +51,12 @@ void convolute(
 
             for (int ky = 0; ky < Mkernel; ++ky) {
                 for (int kx = 0; kx < Nkernel; ++kx) {
+                    #if LTS_EIGEN_MATRIX
+                    // TODO: This is probably a slow way to access the elements.
+                    auto kc = kernel(ky, kx);
+                    #else
                     auto kc = kernel.w[ky][kx];
+                    #endif
 
                     int input_x = static_cast<int>(x - Nkernel / 2 + kx);
                     int input_y = static_cast<int>(y - Mkernel / 2 + ky);
@@ -89,7 +101,11 @@ void convolute(
 //  - This convolution implementation may not be mathematically pure since it does not involve
 //    flipping of the kernel's matrix.
 void convolute(
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::MatrixXf& kernel,
+    #else
     const math::IMatrix<float>& kernel,
+    #endif
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -113,9 +129,17 @@ void convolute(
 // [notes]
 //  - This convolution implementation may not be mathematically pure since it does not involve
 //    flipping of the kernel's matrix.
+#ifdef LTS_EIGEN_MATRIX
+template<typename Tkernel, int Mkernel, int Nkernel>
+#else
 template<typename Tkernel, size_t Mkernel, size_t Nkernel>
+#endif
 void convolute_work_area(
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::Matrix<Tkernel, Mkernel, Nkernel>& kernel,
+    #else
     const math::MatrixFast<Tkernel, Mkernel, Nkernel>& kernel,
+    #endif
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -133,7 +157,11 @@ void convolute_work_area(
 
             for (int ky = 0; ky < Mkernel; ++ky) {
                 for (int kx = 0; kx < Nkernel; ++kx) {
+                    #ifdef LTS_EIGEN_MATRIX
+                    auto kc = kernel(ky, kx);
+                    #else
                     auto kc = kernel.w[ky][kx];
+                    #endif
 
                     int input_x = static_cast<int>(x - Nkernel / 2 + kx);
                     int input_y = static_cast<int>(y - Mkernel / 2 + ky);
@@ -181,7 +209,11 @@ void convolute_work_area(
 //    flipping of the kernel's matrix.
 template<typename Tkernel>
 void convolute_work_area(
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::MatrixX<Tkernel>& kernel,
+    #else
     const math::IMatrix<Tkernel>& kernel,
+    #endif
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -231,10 +263,18 @@ void convolute_work_area(
 
 
 // Performs threaded convolution.
+#ifdef LTS_EIGEN_MATRIX
+template<typename Tkernel, int Mkernel, int Nkernel>
+#else
 template<typename Tkernel, size_t Mkernel, size_t Nkernel>
+#endif
 void convolute_threaded(
     size_t num_threads,
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::Matrix<Tkernel, Mkernel, Nkernel>& kernel,
+    #else
     const math::MatrixFast<Tkernel, Mkernel, Nkernel>& kernel,
+    #endif
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
