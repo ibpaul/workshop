@@ -5,18 +5,19 @@
 #include <map>
 #include "framework/FilterFast.h"
 #include "framework/Filter.h"
-#include "filter/Kernel.h"
+#include "math/Matrix.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "util/string.h"
 
 using namespace std;
-using lts::filter::KernelFast;
-using lts::filter::Kernel;
-using lts::filter::IKernel;
-using lts::filter::KernelEigen;
+using lts::math::MatrixFast;
+using lts::math::Matrix;
+using lts::math::IMatrix;
+using lts::math::MatrixEigen;
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
+using lts::filter::convolute_threaded;
 using lts::util::starts_with;
 using lts::util::split;
 
@@ -27,7 +28,7 @@ namespace framework {
 template<size_t S>
 std::unique_ptr<IFilter> make_fast_filter(int num_threads)
 {
-    auto kernel = make_unique<KernelFast<float, S, S>>();
+    auto kernel = make_unique<MatrixFast<float, S, S>>();
     load_gaussian(*kernel);
 
     if (num_threads == 0) {
@@ -36,7 +37,7 @@ std::unique_ptr<IFilter> make_fast_filter(int num_threads)
             &convolute<float, S, S>
         ));
     } else {
-        auto func = [](const filter::KernelFast<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
+        auto func = [](const math::MatrixFast<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
             convolute_threaded(5, k, input, width, height, channels, output);
         };
 
@@ -114,7 +115,7 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
             throw runtime_error("options 'eigen' and 'nofast' can not be used together");
         }
 
-        unique_ptr<IKernel<float>> kernel {new KernelEigen<float>{size.first, size.second}};
+        unique_ptr<IMatrix<float>> kernel {new MatrixEigen<float>{size.first, size.second}};
         load_gaussian(*kernel);
 
         return unique_ptr<IFilter>(new Filter<float>(
@@ -141,7 +142,7 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
     }
 
     // Fallback on making a normal Filter.
-    unique_ptr<IKernel<float>> kernel {new Kernel<float>{size.first, size.second}};
+    unique_ptr<IMatrix<float>> kernel {new Matrix<float>{size.first, size.second}};
     load_gaussian(*kernel);
 
     return unique_ptr<IFilter>(new Filter<float>(

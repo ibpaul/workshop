@@ -5,7 +5,7 @@
 
 #include <memory>
 #include "framework/IFilter.h"
-#include "filter/Kernel.h"
+#include "math/Matrix.h"
 
 namespace lts {
 namespace framework {
@@ -16,10 +16,10 @@ class Filter : public IFilter
 {
 public:
     using ProcessFunction = void (*)(
-        const filter::IKernel<T>&, const uint8_t*,
+        const math::IMatrix<T>&, const uint8_t*,
         size_t, size_t, size_t, uint8_t*);
 
-    Filter(std::unique_ptr<filter::IKernel<T>> kernel, ProcessFunction process)
+    Filter(std::unique_ptr<math::IMatrix<T>> kernel, ProcessFunction process)
         : _kernel(move(kernel)),
           _process(process)
     { }
@@ -30,7 +30,7 @@ public:
     }
 
 private:
-    std::unique_ptr<filter::IKernel<T>> _kernel;
+    std::unique_ptr<math::IMatrix<T>> _kernel;
     ProcessFunction _process;
 };
 

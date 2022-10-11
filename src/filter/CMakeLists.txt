@@ -7,7 +7,6 @@ set(INCLUDES
 
 set(SOURCES
     gaussian.cpp
-    Kernel.cpp
     operations.cpp
 )
 

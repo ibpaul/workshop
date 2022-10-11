@@ -1,7 +1,7 @@
 // Kernel functionality for signal processing.
 
-#ifndef LTS_FILTER_KERNEL_H
-#define LTS_FILTER_KERNEL_H
+#ifndef LTS_MATH_MATRIX_H
+#define LTS_MATH_MATRIX_H
 
 #include <cstddef>
 #include <cstdint>
@@ -10,21 +10,21 @@
 #include "optimize_flags.h"
 
 namespace lts {
-namespace filter {
+namespace math {
 
 
-// Abstract base class for all kernels. All our generalized kernel processing functions work on this interface.
+// Abstract base class for all matrices. All our generalized kernel processing functions work on this interface.
 template<typename T>
-class IKernel {
+class IMatrix {
 
 public:
     virtual size_t size_m() const = 0;      // Number of rows in the kernel.
     virtual size_t size_n() const = 0;      // Number of columns in the kernel
     virtual T& at(size_t m, size_t n) = 0;  // Access and set element at index (m, n).
     virtual const T& at(size_t m, size_t n) const = 0;
-    virtual ~IKernel() { }
+    virtual ~IMatrix() { }
 
-    virtual IKernel& operator*=(T scalar)
+    virtual IMatrix& operator*=(T scalar)
     {
         for (size_t m = 0; m < size_m(); ++m) {
             for (size_t n = 0; n < size_n(); ++n) {
@@ -47,7 +47,7 @@ public:
 //      b) the templated convolute<>() method uses the M and N parameters to specify the kernel for loops and the
 //         compiler is able to perform further optimizations on these loops.
 template<typename T, size_t M, size_t N>
-class KernelFast : public IKernel<T> {
+class MatrixFast : public IMatrix<T> {
 public:
     #ifdef LTS_KERNEL_FAST_NATIVE_MULTIDIM_ARRAY
     T w[M][N];  // Weights.
@@ -57,17 +57,16 @@ public:
 
     size_t size_m() const override { return M; }
     size_t size_n() const override { return N; }
-
     T& at(size_t m, size_t n) override { return w[m][n]; }
     const T& at(size_t m, size_t n) const override { return w[m][n]; }
 };
 
 
-// General kernel.
+// General matrix.
 template<typename T>
-class Kernel : public IKernel<T> {
+class Matrix : public IMatrix<T> {
 public:
-    Kernel(size_t m, size_t n)
+    Matrix(size_t m, size_t n)
         : w {new T[m*n]},
           _m {m},
           _n {n}
@@ -88,9 +87,9 @@ private:
 
 
 template<typename T>
-class KernelEigen : public IKernel<T> {
+class MatrixEigen : public IMatrix<T> {
 public:
-    KernelEigen(size_t m, size_t n)
+    MatrixEigen(size_t m, size_t n)
         : w(m, n)
     { }
 
@@ -110,4 +109,4 @@ private:
 }
 }
 
-#endif //LTS_FILTER_KERNEL_H
+#endif //LTS_MATH_MATRIX_H

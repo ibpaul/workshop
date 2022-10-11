@@ -2,6 +2,7 @@
 #include <memory>
 
 using namespace std;
+using lts::math::IMatrix;
 
 namespace lts {
 namespace filter {
@@ -11,7 +12,7 @@ void convolute(
     #if OPTIMIZE_5
     const IKernel<float>& ikernel,
     #else
-    const IKernel<float>& kernel,
+    const IMatrix<float>& kernel,
     #endif
     const uint8_t* input,
     size_t ncols,

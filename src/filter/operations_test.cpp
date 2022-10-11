@@ -6,15 +6,15 @@
 
 using namespace cimg_library;
 using Image = CImg<unsigned char>;
-using lts::filter::KernelFast;
-using lts::filter::Kernel;
+using lts::math::MatrixFast;
+using lts::math::Matrix;
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 using lts::filter::convolute_work_area;
 
 
 TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
-    // Test that a KernelFast<float, 3, 3> run on a work area will use available pixel data on the edges of the work area.
+    // Test that a MatrixFast<float, 3, 3> run on a work area will use available pixel data on the edges of the work area.
     constexpr int width = 10;
     constexpr int height = 10;
     constexpr int channels = 1;
@@ -24,7 +24,7 @@ TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
     auto image = lts::image::horizontal_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    KernelFast<float, 3, 3> k;
+    MatrixFast<float, 3, 3> k;
     k.w[0][0] = 1.0f / 11.0f;
     k.w[0][1] = 1.0f / 11.0f;
     k.w[0][2] = 1.0f / 11.0f;
@@ -55,7 +55,7 @@ TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
 }
 
 TEST(operations_test, ConvoluteWorkArea_Kernel3x3) {
-    // Test that a Kernel<float> run on a work area will use available pixel data on the edges of the work area.
+    // Test that a Matrix<float> run on a work area will use available pixel data on the edges of the work area.
     constexpr int width = 10;
     constexpr int height = 10;
     constexpr int channels = 1;
@@ -65,7 +65,7 @@ TEST(operations_test, ConvoluteWorkArea_Kernel3x3) {
     auto image = lts::image::horizontal_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    Kernel<float> k {3, 3};
+    Matrix<float> k {3, 3};
     k.at(0, 0) = 1.0f / 11.0f;
     k.at(0, 1) = 1.0f / 11.0f;
     k.at(0, 2) = 1.0f / 11.0f;

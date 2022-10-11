@@ -4,6 +4,7 @@
 #include "util/statistics.h"
 
 using namespace std;
+using lts::math::IMatrix;
 
 namespace lts {
 namespace filter {
@@ -15,7 +16,7 @@ size_t _point_to_normal(size_t v, size_t midpoint)
 }
 
 
-void load_gaussian(IKernel<float>& kernel)
+void load_gaussian(IMatrix<float>& kernel)
 {
     // Our copy methods won't work on this size, and it doesn't make much sense anyway for a kernel this size.
     assert(kernel.size_m() > 2 && kernel.size_n() > 2);

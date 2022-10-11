@@ -7,7 +7,7 @@
 #include <memory>
 #include <future>
 #include <vector>
-#include "filter/Kernel.h"
+#include "math/Matrix.h"
 
 namespace lts {
 namespace filter {
@@ -28,7 +28,7 @@ namespace filter {
 //    flipping of the kernel's matrix.
 template<typename Tkernel, size_t Mkernel, size_t Nkernel>
 void convolute(
-    const KernelFast<Tkernel, Mkernel, Mkernel>& kernel,
+    const math::MatrixFast<Tkernel, Mkernel, Mkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -89,7 +89,7 @@ void convolute(
 //  - This convolution implementation may not be mathematically pure since it does not involve
 //    flipping of the kernel's matrix.
 void convolute(
-    const IKernel<float>& kernel,
+    const math::IMatrix<float>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -115,7 +115,7 @@ void convolute(
 //    flipping of the kernel's matrix.
 template<typename Tkernel, size_t Mkernel, size_t Nkernel>
 void convolute_work_area(
-    const KernelFast<Tkernel, Mkernel, Nkernel>& kernel,
+    const math::MatrixFast<Tkernel, Mkernel, Nkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -181,7 +181,7 @@ void convolute_work_area(
 //    flipping of the kernel's matrix.
 template<typename Tkernel>
 void convolute_work_area(
-    const IKernel<Tkernel>& kernel,
+    const math::IMatrix<Tkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -234,7 +234,7 @@ void convolute_work_area(
 template<typename Tkernel, size_t Mkernel, size_t Nkernel>
 void convolute_threaded(
     size_t num_threads,
-    const KernelFast<Tkernel, Mkernel, Nkernel>& kernel,
+    const math::MatrixFast<Tkernel, Mkernel, Nkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,
@@ -268,7 +268,7 @@ void convolute_threaded(
 template<typename Tkernel>
 void convolute_threaded_generic(
     size_t num_threads,
-    const IKernel<Tkernel>& kernel,
+    const math::IMatrix<Tkernel>& kernel,
     const uint8_t* input,
     size_t ncols,
     size_t nrows,

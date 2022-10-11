@@ -5,7 +5,7 @@
 
 #include <memory>
 #include "framework/IFilter.h"
-#include "filter/Kernel.h"
+#include "math/Matrix.h"
 
 namespace lts {
 namespace framework {
@@ -15,10 +15,10 @@ class FilterFast : public IFilter
 {
 public:
     using ProcessFunction = void (*)(
-        const filter::KernelFast<T, M, N>&, const uint8_t* input,
+        const math::MatrixFast<T, M, N>&, const uint8_t* input,
         size_t, size_t, size_t, uint8_t*);
 
-    FilterFast(std::unique_ptr<filter::KernelFast<T,M,N>> kernel, ProcessFunction process)
+    FilterFast(std::unique_ptr<math::MatrixFast<T,M,N>> kernel, ProcessFunction process)
         : _kernel(move(kernel)),
           _process(process)
     { }
@@ -29,7 +29,7 @@ public:
     }
 
 private:
-    std::unique_ptr<filter::KernelFast<T, M, N>> _kernel;
+    std::unique_ptr<math::MatrixFast<T, M, N>> _kernel;
     ProcessFunction _process;
 };
 
