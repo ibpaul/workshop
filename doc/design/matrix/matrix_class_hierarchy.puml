@@ -1,20 +1,20 @@
 @startuml
 
-abstract IKernel<T> {
+abstract IMatrix<T> {
     virtual T& at(m, n)
     virtual const T& at(m, n) const
     virtual size_t size_m() const
     virtual size_t size_n() const
 }
 
-class KernelFast<T,M,N> {
+class Matrix2Fast<T,M,N> {
     Fastest filter processing.
     Size set at compile-time.
     ---
     {field} w : T[M][N] // weights
 }
 
-class Kernel<T> {
+class Matrix<T> {
     Slower filter processing.
     Size set at run-time.
     ---
@@ -27,7 +27,7 @@ package "Eigen Library" {
     class MatrixXd
 }
 
-class KernelEigen<T> {
+class MatrixEigen<T> {
     Data structures from the Eigen
     library are used.
     ---
@@ -37,16 +37,16 @@ class KernelEigen<T> {
 }
 
 
-IKernel <|-- KernelFast
-IKernel <|-- Kernel
-IKernel <|-- KernelEigen
+IMatrix <|-- Matrix2Fast
+IMatrix <|-- Matrix
+IMatrix <|-- MatrixEigen
 
 
 class global {
-    convolute(IKernel&)
-    convolute(KernelFast<T,M,N>&)
+    convolute(IMatrix&)
+    convolute(MatrixFast<T,M,N>&)
 
-    load_gaussian(IKernel&)
+    load_gaussian(IMatrix&)
 }
 
 
