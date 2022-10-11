@@ -11,3 +11,5 @@ users.
    thus would fail to load properly.
 
  - `LTS_KERNEL_FAST_ARRAY_MEMBER` - Use the STL container `array` for storing the kernel weights.
+
+ - `LTS_KERNEL_FAST_NESTED_ARRAY_MEMBER` - Use nested STL `array` containers for storing the kernel weights.

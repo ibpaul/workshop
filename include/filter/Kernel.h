@@ -50,7 +50,9 @@ template<typename T, size_t M, size_t N>
 class KernelFast : public IKernel<T> {
 public:
     #ifdef LTS_KERNEL_FAST_ARRAY_MEMBER
-    std::array<T, M*N> w;
+    std::array<T, M*N> w; // Weights.
+    #elif defined(LTS_KERNEL_FAST_NESTED_ARRAY_MEMBER)
+    std::array<std::array<T, N>, M> w;  // Weights.
     #else
     T w[M][N];  // Weights.
     #endif
