@@ -229,12 +229,24 @@ void convolute_work_area(
         for (size_t x = 0; x < ncols; ++x) {
             std::fill_n(new_pixel.get(), channels, static_cast<float>(0.0f));
 
+            #if LTS_EIGEN_MATRIX
+            for (int ky = 0; ky < kernel.rows(); ++ky) {
+                for (int kx = 0; kx < kernel.cols(); ++kx) {
+            #else
             for (int ky = 0; ky < kernel.size_m(); ++ky) {
                 for (int kx = 0; kx < kernel.size_n(); ++kx) {
+            #endif
+                    #if LTS_EIGEN_MATRIX
+                    auto kc = kernel(ky, kx);
+
+                    int input_x = static_cast<int>(x - kernel.cols() / 2 + kx);
+                    int input_y = static_cast<int>(y - kernel.rows() / 2 + ky);
+                    #else
                     auto kc = kernel.at(ky, kx);
 
                     int input_x = static_cast<int>(x - kernel.size_n() / 2 + kx);
                     int input_y = static_cast<int>(y - kernel.size_m() / 2 + ky);
+                    #endif
 
                     // Adjust input coordinate if kernel is overhanging the input image's side/top.
                     if (input_x < 0)
@@ -308,7 +320,11 @@ void convolute_threaded(
 template<typename Tkernel>
 void convolute_threaded_generic(
     size_t num_threads,
+    #ifdef LTS_EIGEN_MATRIX
+    const Eigen::MatrixX<Tkernel>& kernel,
+    #else
     const math::IMatrix<Tkernel>& kernel,
+    #endif
     const uint8_t* input,
     size_t ncols,
     size_t nrows,

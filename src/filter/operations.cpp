@@ -2,7 +2,9 @@
 #include <memory>
 
 using namespace std;
+#ifndef LTS_EIGEN_MATRIX
 using lts::math::IMatrix;
+#endif
 
 namespace lts {
 namespace filter {

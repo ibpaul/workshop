@@ -6,15 +6,20 @@
 
 using namespace cimg_library;
 using Image = CImg<unsigned char>;
+#ifdef LTS_EIGEN_MATRIX
+using Eigen::Matrix;
+using Eigen::MatrixX;
+#else
 using lts::math::MatrixFast;
 using lts::math::Matrix;
+#endif
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 using lts::filter::convolute_work_area;
 
 
-TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
-    // Test that a MatrixFast<float, 3, 3> run on a work area will use available pixel data on the edges of the work area.
+TEST(operations_test, ConvoluteWorkArea_Matrix3x3) {
+    // Test that a Matrix<float, 3, 3> run on a work area will use available pixel data on the edges of the work area.
     constexpr int width = 10;
     constexpr int height = 10;
     constexpr int channels = 1;
@@ -24,6 +29,18 @@ TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
     auto image = lts::image::horizontal_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
+    #ifdef LTS_EIGEN_MATRIX
+    Matrix<float, 3, 3> k;
+    k(0, 0) = 1.0f / 11.0f;
+    k(0, 1) = 1.0f / 11.0f;
+    k(0, 2) = 1.0f / 11.0f;
+    k(1, 0) = 1.0f / 11.0f;
+    k(1, 1) = 3.0f / 11.0f;
+    k(1, 2) = 1.0f / 11.0f;
+    k(2, 0) = 1.0f / 11.0f;
+    k(2, 1) = 1.0f / 11.0f;
+    k(2, 2) = 1.0f / 11.0f;
+    #else
     MatrixFast<float, 3, 3> k;
     k.w[0][0] = 1.0f / 11.0f;
     k.w[0][1] = 1.0f / 11.0f;
@@ -34,6 +51,7 @@ TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
     k.w[2][0] = 1.0f / 11.0f;
     k.w[2][1] = 1.0f / 11.0f;
     k.w[2][2] = 1.0f / 11.0f;
+    #endif
 
     convolute_work_area(k, &image[0], height, width, channels, output, start_row, end_row);
 
@@ -54,8 +72,8 @@ TEST(operations_test, ConvoluteWorkArea_KernelFast3x3) {
         EXPECT_EQ(expected[i], output[i]);
 }
 
-TEST(operations_test, ConvoluteWorkArea_Kernel3x3) {
-    // Test that a Matrix<float> run on a work area will use available pixel data on the edges of the work area.
+TEST(operations_test, ConvoluteWorkArea_MatrixX3x3) {
+    // Test that a MatrixX<float> run on a work area will use available pixel data on the edges of the work area.
     constexpr int width = 10;
     constexpr int height = 10;
     constexpr int channels = 1;
@@ -65,6 +83,18 @@ TEST(operations_test, ConvoluteWorkArea_Kernel3x3) {
     auto image = lts::image::horizontal_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
+    #ifdef LTS_EIGEN_MATRIX
+    MatrixX<float> k {3, 3};
+    k(0, 0) = 1.0f / 11.0f;
+    k(0, 1) = 1.0f / 11.0f;
+    k(0, 2) = 1.0f / 11.0f;
+    k(1, 0) = 1.0f / 11.0f;
+    k(1, 1) = 3.0f / 11.0f;
+    k(1, 2) = 1.0f / 11.0f;
+    k(2, 0) = 1.0f / 11.0f;
+    k(2, 1) = 1.0f / 11.0f;
+    k(2, 2) = 1.0f / 11.0f;
+    #else
     Matrix<float> k {3, 3};
     k.at(0, 0) = 1.0f / 11.0f;
     k.at(0, 1) = 1.0f / 11.0f;
@@ -75,6 +105,7 @@ TEST(operations_test, ConvoluteWorkArea_Kernel3x3) {
     k.at(2, 0) = 1.0f / 11.0f;
     k.at(2, 1) = 1.0f / 11.0f;
     k.at(2, 2) = 1.0f / 11.0f;
+    #endif
 
     convolute_work_area(k, &image[0], height, width, channels, output, start_row, end_row);
 

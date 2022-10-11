@@ -12,7 +12,7 @@
 namespace lts {
 namespace math {
 
-
+#ifndef LTS_EIGEN_MATRIX
 // Abstract base class for all matrices. All our generalized kernel processing functions work on this interface.
 template<typename T>
 class IMatrix {
@@ -103,7 +103,7 @@ private:
 #endif
     Eigen::MatrixXf w;
 };
-
+#endif
 
 
 }
