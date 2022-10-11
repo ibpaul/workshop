@@ -49,24 +49,17 @@ public:
 template<typename T, size_t M, size_t N>
 class KernelFast : public IKernel<T> {
 public:
-    #ifdef LTS_KERNEL_FAST_ARRAY_MEMBER
-    std::array<T, M*N> w; // Weights.
-    #elif defined(LTS_KERNEL_FAST_NESTED_ARRAY_MEMBER)
-    std::array<std::array<T, N>, M> w;  // Weights.
-    #else
+    #ifdef LTS_KERNEL_FAST_NATIVE_MULTIDIM_ARRAY
     T w[M][N];  // Weights.
+    #else
+    std::array<std::array<T, N>, M> w;  // Weights.
     #endif
 
     size_t size_m() const override { return M; }
     size_t size_n() const override { return N; }
 
-    #ifdef LTS_KERNEL_FAST_ARRAY_MEMBER
-    T& at(size_t m, size_t n) override { return w[m * N + n]; }
-    const T& at(size_t m, size_t n) const override { return w[m * N + n]; }
-    #else
     T& at(size_t m, size_t n) override { return w[m][n]; }
     const T& at(size_t m, size_t n) const override { return w[m][n]; }
-    #endif
 };
 
 
