@@ -1,7 +1,7 @@
 # Workshop Design Document
 
  - [Images](design/images.md)
- - [Kernel](design/kernel.md)
+ - [Matrix](design/matrix/overview.md)
  - [Gaussian Kernel](design/gaussian_kernel.md)
  - [Process Functions](design/process_functions.md)
  - [Filter Factory](design/filter_factory.md)
