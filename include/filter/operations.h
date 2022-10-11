@@ -44,7 +44,11 @@ void convolute(
 
             for (int ky = 0; ky < Mkernel; ++ky) {
                 for (int kx = 0; kx < Nkernel; ++kx) {
+                    #ifdef LTS_KERNEL_FAST_ARRAY_MEMBER
+                    auto kc = kernel.w[ky * Nkernel + kx];
+                    #else
                     auto kc = kernel.w[ky][kx];
+                    #endif
 
                     int input_x = static_cast<int>(x - Nkernel / 2 + kx);
                     int input_y = static_cast<int>(y - Mkernel / 2 + ky);
@@ -133,7 +137,11 @@ void convolute_work_area(
 
             for (int ky = 0; ky < Mkernel; ++ky) {
                 for (int kx = 0; kx < Nkernel; ++kx) {
+                    #ifdef LTS_KERNEL_FAST_ARRAY_MEMBER
+                    auto kc = kernel.w[ky * Nkernel + kx];
+                    #else
                     auto kc = kernel.w[ky][kx];
+                    #endif
 
                     int input_x = static_cast<int>(x - Nkernel / 2 + kx);
                     int input_y = static_cast<int>(y - Mkernel / 2 + ky);

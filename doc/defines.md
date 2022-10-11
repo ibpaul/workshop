@@ -9,3 +9,5 @@ users.
    loading gaussian weights into a kernel failed when implementing the `KernelEigen` class. This
    class uses the *Eigen* library's matrix object and does not have the same memory layout and
    thus would fail to load properly.
+
+ - `LTS_KERNEL_FAST_ARRAY_MEMBER` - Use the STL container `array` for storing the kernel weights.
