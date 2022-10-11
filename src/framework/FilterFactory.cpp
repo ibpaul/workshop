@@ -16,10 +16,12 @@
 #include "util/string.h"
 
 using namespace std;
+#ifndef LTS_EIGEN_MATRIX
 using lts::math::MatrixFast;
 using lts::math::Matrix;
 using lts::math::IMatrix;
 using lts::math::MatrixEigen;
+#endif
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 using lts::filter::convolute_threaded;
