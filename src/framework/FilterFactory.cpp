@@ -5,102 +5,50 @@
 #include <map>
 #include "framework/FilterFast.h"
 #include "framework/Filter.h"
-
-
-#ifdef LTS_EIGEN_MATRIX
-    #include "math/SimpleMatrix.h"
-#else
-    // TODO: Remove.
-    #include "math/Matrix.h"
-#endif
-
-
+#include "math/SimpleMatrix.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "util/string.h"
 
+
 using namespace std;
-#ifndef LTS_EIGEN_MATRIX
-using lts::math::MatrixFast;
-using lts::math::Matrix;
-using lts::math::IMatrix;
-//using lts::math::MatrixEigen;
-#else
 using lts::math::SimpleMatrix;
-#endif
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 using lts::filter::convolute_threaded;
 using lts::util::starts_with;
 using lts::util::split;
 
+
 namespace lts {
 namespace framework {
 
 
-#ifdef LTS_EIGEN_MATRIX
-// HACK: Would like to specify the matrices size as defined by the Eigen library.
 template<int S>
-//template <typename T>
 std::unique_ptr<IFilter> make_static_matrix(int num_threads)
-#else
-template<size_t S>
-std::unique_ptr<IFilter> make_static_matrix(int num_threads)
-#endif
 {
-    #ifdef LTS_EIGEN_MATRIX
-    //auto kernel = make_unique<T>();
-    //auto kernel = make_unique<T<float, S, S>>();
     auto kernel = make_unique<Eigen::Matrix<float, S, S>>();
-    #else
-    auto kernel = make_unique<MatrixFast<float, S, S>>();
-    #endif
 
     load_gaussian(*kernel);
 
     if (num_threads == 0) {
-        #ifdef LTS_EIGEN_MATRIX
-        return unique_ptr<IFilter>(new FilterFast<float, S, S>(
-        //return unique_ptr<IFilter>(new T(
-            std::move(kernel),
-            &convolute<float, S, S>
-        ));
-        #else
         return unique_ptr<IFilter>(new FilterFast<float, S, S>(
             std::move(kernel),
             &convolute<float, S, S>
         ));
-        #endif
     } else {
-        #ifdef LTS_EIGEN_MATRIX
-        //throw runtime_error("not implemented");
-        // TODO: Convert to Eigen matrix.
         auto func = [](const Eigen::Matrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
             convolute_threaded(5, k, input, width, height, channels, output);
         };
-        #else
-        auto func = [](const math::MatrixFast<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
-            convolute_threaded(5, k, input, width, height, channels, output);
-        };
-        #endif
 
-        #ifdef LTS_EIGEN_MATRIX
-        // TODO: Convert to Eigen matrix.
         return unique_ptr<IFilter>(new FilterFast<float, S, S>(
             std::move(kernel),
             func
         ));
-        #else
-        return unique_ptr<IFilter>(new FilterFast<float, S, S>(
-            std::move(kernel),
-            func
-        ));
-        #endif
     }
 }
 
 
-#ifdef LTS_EIGEN_MATRIX
 template<int S>
 std::unique_ptr<IFilter> make_simple_static_matrix(int num_threads)
 {
@@ -124,7 +72,6 @@ std::unique_ptr<IFilter> make_simple_static_matrix(int num_threads)
         ));
     }
 }
-#endif
 
 
 map<string, bool> FilterFactory::process_use_flags(queue<string>& params)
@@ -189,9 +136,6 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
     auto flags = process_use_flags(q);
 
     if (flags["simple"]) {
-        #ifndef LTS_EIGEN_MATRIX
-        throw runtime_error("invalid");
-        #else
         if (size.first != size.second)
             throw invalid_argument("matrix sizes must be the same for option 'simple'");
 
@@ -205,7 +149,6 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
             return make_simple_static_matrix<9>(num_threads);
         if (size.first == 11)
             return make_simple_static_matrix<11>(num_threads);
-        #endif
     } else if (size.first == size.second && !flags["nofast"]) {
         // We can make a static Matrix.
         if (size.first == 3)
@@ -226,12 +169,7 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
     }
 
     // Fallback on making a normal Filter.
-    #ifdef LTS_EIGEN_MATRIX
     auto kernel = make_unique<Eigen::MatrixXf>(size.first, size.second);
-    //unique_ptr<Eigen::MatrixXf> kernel {new Matrix<float>{size.first, size.second}};
-    #else
-    unique_ptr<IMatrix<float>> kernel {new Matrix<float>{size.first, size.second}};
-    #endif
 
     load_gaussian(*kernel);
 

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr)
 project(zephyr_filter)
-add_compile_definitions(LTS_EIGEN_MATRIX)
 include_directories(${APPLICATION_SOURCE_DIR}/../../include)
 target_sources(app PRIVATE src/main.cpp)
 

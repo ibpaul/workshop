@@ -6,12 +6,8 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
-#ifdef LTS_EIGEN_MATRIX
-	#include <Eigen/Dense>
-	#include "math/SimpleMatrix.h"
-#else
-	#include "math/SimpleMatrix.h"
-#endif
+#include <Eigen/Dense>
+#include "math/SimpleMatrix.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "image/patterns.h"
@@ -40,12 +36,8 @@ int main(void)
 {
     auto ret {0};
 
-	#ifdef LTS_EIGEN_MATRIX
 	Eigen::Matrix<float, 3, 3> kernel;
 	//lts::math::SimpleMatrix<float, 3, 3> kernel;
-	#else
-    lts::math::SimpleMatrix<float, 3, 3> kernel;
-	#endif
     lts::filter::load_gaussian(kernel);
 
     auto input = lts::image::vertical_lines(256, 256, 1);

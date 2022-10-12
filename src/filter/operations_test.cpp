@@ -6,13 +6,8 @@
 
 using namespace cimg_library;
 using Image = CImg<unsigned char>;
-#ifdef LTS_EIGEN_MATRIX
 using Eigen::Matrix;
 using Eigen::MatrixX;
-#else
-using lts::math::MatrixFast;
-using lts::math::Matrix;
-#endif
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
 using lts::filter::convolute_work_area;
@@ -29,7 +24,6 @@ TEST(operations_test, ConvoluteWorkArea_Matrix3x3) {
     auto image = lts::image::horizontal_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    #ifdef LTS_EIGEN_MATRIX
     Matrix<float, 3, 3> k;
     k(0, 0) = 1.0f / 11.0f;
     k(0, 1) = 1.0f / 11.0f;
@@ -40,18 +34,6 @@ TEST(operations_test, ConvoluteWorkArea_Matrix3x3) {
     k(2, 0) = 1.0f / 11.0f;
     k(2, 1) = 1.0f / 11.0f;
     k(2, 2) = 1.0f / 11.0f;
-    #else
-    MatrixFast<float, 3, 3> k;
-    k.w[0][0] = 1.0f / 11.0f;
-    k.w[0][1] = 1.0f / 11.0f;
-    k.w[0][2] = 1.0f / 11.0f;
-    k.w[1][0] = 1.0f / 11.0f;
-    k.w[1][1] = 3.0f / 11.0f;
-    k.w[1][2] = 1.0f / 11.0f;
-    k.w[2][0] = 1.0f / 11.0f;
-    k.w[2][1] = 1.0f / 11.0f;
-    k.w[2][2] = 1.0f / 11.0f;
-    #endif
 
     convolute_work_area(k, &image[0], height, width, channels, output, start_row, end_row);
 
@@ -83,7 +65,6 @@ TEST(operations_test, ConvoluteWorkArea_MatrixX3x3) {
     auto image = lts::image::horizontal_lines(width, height, channels);
     uint8_t output[width*height*channels]{};
 
-    #ifdef LTS_EIGEN_MATRIX
     MatrixX<float> k {3, 3};
     k(0, 0) = 1.0f / 11.0f;
     k(0, 1) = 1.0f / 11.0f;
@@ -94,18 +75,6 @@ TEST(operations_test, ConvoluteWorkArea_MatrixX3x3) {
     k(2, 0) = 1.0f / 11.0f;
     k(2, 1) = 1.0f / 11.0f;
     k(2, 2) = 1.0f / 11.0f;
-    #else
-    Matrix<float> k {3, 3};
-    k.at(0, 0) = 1.0f / 11.0f;
-    k.at(0, 1) = 1.0f / 11.0f;
-    k.at(0, 2) = 1.0f / 11.0f;
-    k.at(1, 0) = 1.0f / 11.0f;
-    k.at(1, 1) = 3.0f / 11.0f;
-    k.at(1, 2) = 1.0f / 11.0f;
-    k.at(2, 0) = 1.0f / 11.0f;
-    k.at(2, 1) = 1.0f / 11.0f;
-    k.at(2, 2) = 1.0f / 11.0f;
-    #endif
 
     convolute_work_area(k, &image[0], height, width, channels, output, start_row, end_row);
 

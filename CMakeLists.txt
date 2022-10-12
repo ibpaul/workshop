@@ -3,8 +3,6 @@ project(Workshop)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_compile_definitions(LTS_EIGEN_MATRIX)
-
 if (NOT UNIX)
     # On Windows, we have CMake find our included zlib library via our
     # provided FindZLIB.cmake file.

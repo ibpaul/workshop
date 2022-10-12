@@ -24,7 +24,6 @@
 /* USER CODE BEGIN Includes */
 #include <chrono>
 #include <stdio.h>
-#include "math/Matrix.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "image/patterns.h"

@@ -3,17 +3,14 @@
 #ifndef LTS_FILTER_GAUSSIAN_H
 #define LTS_FILTER_GAUSSIAN_H
 
-#ifdef LTS_EIGEN_MATRIX
-    #include <Eigen/Dense>
-    #include "util/statistics.h"
-#else
-    #include "math/Matrix.h"
-#endif
+
+#include <Eigen/Dense>
+#include "util/statistics.h"
+
 
 namespace lts {
 namespace filter {
 
-#ifdef LTS_EIGEN_MATRIX
 
 size_t _point_to_normal(size_t v, size_t midpoint);
 
@@ -80,32 +77,17 @@ void load_gaussian(Eigen::Matrix<T, M, N>& kernel)
         }
 
         // We only compute the kernel for positive values. Copy the computed values into the mirror quadrant.
-        #if LTS_LOAD_GAUSSIAN_MEMCPY
-        // HACK: This relies on knowing the internal workings of Kernel.
-        auto row_start = &kernel.at(m, 0);
-        reverse_copy(row_start + midpoint_n - 1, row_start + kernel.size_n(), row_start);
-        #else
         for (size_t pos = 0; pos < midpoint_n; ++pos)
             kernel(m, pos) = kernel(m, kernel.cols() - pos - 1);
-        #endif
     }
 
     // We have computed the kernel for one quadrant, copied the values to another quadrant. Let's copy the values
     // into the other half of the kernel now.
-    #if LTS_LOAD_GAUSSIAN_MEMCPY
-    // HACK: This relies on knowing the internal workings of Kernel.
-    for (size_t m = 0; m < midpoint_m; ++m) {
-        auto row_start_src = &kernel.at(kernel.size_m() - m - 1, 0);
-        auto row_start_dest = &kernel.at(m, 0);
-        copy(row_start_src, row_start_src + kernel.size_n(), row_start_dest);
-    }
-    #else
     for (size_t row = 0; row < midpoint_m; ++row) {
         for (size_t col = 0; col < kernel.cols(); ++col) {
             kernel(row, col) = kernel(kernel.rows() - row - 1, col);
         }
     }
-    #endif
 
     // HACK: Adjustment to get the processed image at the same level of brightness.
 //    kernel *= 3.0f;
@@ -113,10 +95,6 @@ void load_gaussian(Eigen::Matrix<T, M, N>& kernel)
 
 void load_gaussian(Eigen::MatrixXf& kernel);
 
-
-#else
-void load_gaussian(math::IMatrix<float>& kernel);
-#endif
 
 }
 }
