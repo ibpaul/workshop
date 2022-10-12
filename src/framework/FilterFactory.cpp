@@ -3,7 +3,6 @@
 #include <stdexcept>
 #include <queue>
 #include <map>
-#include "framework/FilterFast.h"
 #include "framework/Filter.h"
 #include "math/SimpleMatrix.h"
 #include "filter/gaussian.h"
@@ -24,49 +23,24 @@ namespace lts {
 namespace framework {
 
 
-template<int S>
-std::unique_ptr<IFilter> make_static_matrix(int num_threads)
+template<template <typename, int, int...> class TMatrix, int S>
+std::unique_ptr<IFilter> FilterFactory::make_static_filter(int num_threads)
 {
-    auto kernel = make_unique<Eigen::Matrix<float, S, S>>();
+    auto kernel = make_unique<TMatrix<float, S, S>>();
 
     load_gaussian(*kernel);
 
     if (num_threads == 0) {
-        return unique_ptr<IFilter>(new FilterFast<float, S, S>(
+        return unique_ptr<IFilter>(new Filter<TMatrix, float, S, S>(
             std::move(kernel),
             &convolute<float, S, S>
         ));
     } else {
-        auto func = [](const Eigen::Matrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
+        auto func = [](const TMatrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
             convolute_threaded(5, k, input, width, height, channels, output);
         };
 
-        return unique_ptr<IFilter>(new FilterFast<float, S, S>(
-            std::move(kernel),
-            func
-        ));
-    }
-}
-
-
-template<int S>
-std::unique_ptr<IFilter> make_simple_static_matrix(int num_threads)
-{
-    auto kernel = make_unique<SimpleMatrix<float, S, S>>();
-
-    load_gaussian(*kernel);
-
-    if (num_threads == 0) {
-        return unique_ptr<IFilter>(new FilterSimple<float, S, S>(
-            std::move(kernel),
-            &convolute<float, S, S>
-        ));
-    } else {
-        auto func = [](const SimpleMatrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
-            convolute_threaded(5, k, input, width, height, channels, output);
-        };
-
-        return unique_ptr<IFilter>(new FilterSimple<float, S, S>(
+        return unique_ptr<IFilter>(new Filter<TMatrix, float, S, S>(
             std::move(kernel),
             func
         ));
@@ -140,27 +114,26 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
             throw invalid_argument("matrix sizes must be the same for option 'simple'");
 
         if (size.first == 3)
-            return make_simple_static_matrix<3>(num_threads);
+            return make_static_filter<SimpleMatrix, 3>(num_threads);
         if (size.first == 5)
-            return make_simple_static_matrix<5>(num_threads);
+            return make_static_filter<SimpleMatrix, 5>(num_threads);
         if (size.first == 7)
-            return make_simple_static_matrix<7>(num_threads);
+            return make_static_filter<SimpleMatrix, 7>(num_threads);
         if (size.first == 9)
-            return make_simple_static_matrix<9>(num_threads);
+            return make_static_filter<SimpleMatrix, 9>(num_threads);
         if (size.first == 11)
-            return make_simple_static_matrix<11>(num_threads);
+            return make_static_filter<SimpleMatrix, 11>(num_threads);
     } else if (size.first == size.second && !flags["nofast"]) {
-        // We can make a static Matrix.
         if (size.first == 3)
-            return make_static_matrix<3>(num_threads);
+            return make_static_filter<Eigen::Matrix, 3>(num_threads);
         if (size.first == 5)
-            return make_static_matrix<5>(num_threads);
+            return make_static_filter<Eigen::Matrix, 5>(num_threads);
         if (size.first == 7)
-            return make_static_matrix<7>(num_threads);
+            return make_static_filter<Eigen::Matrix, 7>(num_threads);
         if (size.first == 9)
-            return make_static_matrix<9>(num_threads);
+            return make_static_filter<Eigen::Matrix, 9>(num_threads);
         if (size.first == 11)
-            return make_static_matrix<11>(num_threads);
+            return make_static_filter<Eigen::Matrix, 11>(num_threads);
     }
 
     if (num_threads > 0) {
@@ -173,7 +146,7 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
 
     load_gaussian(*kernel);
 
-    return unique_ptr<IFilter>(new Filter<float>(
+    return unique_ptr<IFilter>(new Filter<Eigen::Matrix, float, Eigen::Dynamic, Eigen::Dynamic>(
         std::move(kernel),
         &convolute
     ));

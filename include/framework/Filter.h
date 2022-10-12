@@ -12,15 +12,15 @@ namespace lts {
 namespace framework {
 
 
-template<typename T>
+template<template <typename, int, int...> class TMatrix, typename T, int M, int N>
 class Filter : public IFilter
 {
 public:
     using ProcessFunction = void (*)(
-        const Eigen::MatrixX<T>&, const uint8_t*,
+        const TMatrix<T, M, N>&, const uint8_t* input,
         size_t, size_t, size_t, uint8_t*);
 
-    Filter(std::unique_ptr<Eigen::MatrixXf> kernel, ProcessFunction process)
+    Filter(std::unique_ptr<TMatrix<T,M,N>> kernel, ProcessFunction process)
         : _kernel(move(kernel)),
           _process(process)
     { }
@@ -31,7 +31,7 @@ public:
     }
 
 private:
-    std::unique_ptr<Eigen::MatrixXf> _kernel;
+    std::unique_ptr<TMatrix<T, M, N>> _kernel;
     ProcessFunction _process;
 };
 

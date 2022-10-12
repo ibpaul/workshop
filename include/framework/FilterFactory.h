@@ -22,6 +22,9 @@ public:
 private:
     static std::map<std::string, bool> process_use_flags(std::queue<std::string>& params);
     static std::pair<size_t, size_t> process_matrix_sizing(std::queue<std::string>& params, const std::string& spec);
+
+    template<template <typename, int, int...> class TMatrix, int S>
+    static std::unique_ptr<IFilter> make_static_filter(int num_threads);
 };
 
 
