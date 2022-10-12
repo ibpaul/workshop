@@ -136,15 +136,23 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
             return make_static_filter<Eigen::Matrix, 11>(num_threads);
     }
 
-    if (num_threads > 0) {
-        // We don't have multi-threading enabled for generic kernels yet.
-        throw runtime_error("cannot run multi-threaded for provided spec");
-    }
-
     // Fallback on making a normal Filter.
     auto kernel = make_unique<Eigen::MatrixXf>(size.first, size.second);
-
     load_gaussian(*kernel);
+
+    if (num_threads > 0) {
+        // We don't have multi-threading enabled for generic kernels yet.
+        //throw runtime_error("cannot run multi-threaded for provided spec");
+
+        auto func = [](const Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
+            convolute_threaded(5, k, input, width, height, channels, output);
+        };
+
+        return unique_ptr<IFilter>(new Filter<Eigen::Matrix, float, Eigen::Dynamic, Eigen::Dynamic>(
+            std::move(kernel),
+            func
+        ));
+    }
 
     return unique_ptr<IFilter>(new Filter<Eigen::Matrix, float, Eigen::Dynamic, Eigen::Dynamic>(
         std::move(kernel),

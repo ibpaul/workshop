@@ -220,7 +220,7 @@ void test_peppers_MatrixX3x3_threaded(size_t numOfThreads)
     Image expected("data/test/peppers_3x3_gaussian.png");
 
     load_gaussian(k);
-    lts::filter::convolute_threaded_generic<float>(
+    convolute_threaded(
         numOfThreads,
         k,
         &input[0],
@@ -242,7 +242,6 @@ TEST(gaussian_test, peppers_Matrix3x3_gaussian_one_threaded) {
 
 TEST(gaussian_test, peppers_MatrixX3x3_gaussian_one_threaded) {
     // Verifies our Matrix3x3 gaussian filter processes the data/peppers.png image correctly when processed with 1 thread.
-    GTEST_SKIP() << "under test functions not fully implemented";
     test_peppers_MatrixX3x3_threaded(1);
 }
 
@@ -259,7 +258,6 @@ TEST(gaussian_test, peppers_MatrixX3x3_gaussian_two_threads) {
     // Verifies our MatrixX3x3 gaussian filter processes the data/peppers.png image correctly when processed with 2 threads.
     // NOTE: This ensures that the adjacent work areas include image pixels instead of extending from the edge of the
     //       work area.
-    GTEST_SKIP() << "under test functions not fully implemented";
     test_peppers_MatrixX3x3_threaded(2);
 }
 
@@ -274,6 +272,5 @@ TEST(gaussian_test, peppers_Matrix3x3_gaussian_three_threads) {
 TEST(gaussian_test, peppers_MatrixX3x3_gaussian_three_threads) {
     // Verifies our MatrixX3x3 gaussian filter processes the data/peppers.png image correctly when processed with 2 threads.
     // NOTE: Tests if our bound calculations don't skip some rows.
-    GTEST_SKIP() << "under test functions not fully implemented";
     test_peppers_MatrixX3x3_threaded(3);
 }
