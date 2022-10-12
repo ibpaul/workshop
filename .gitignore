@@ -18,6 +18,7 @@
 **/Makefile
 /build
 **/*.cpp.bak
+/doc/html/**
 
 # Ignore generated output from compiling third-party libraries.
 /libs
