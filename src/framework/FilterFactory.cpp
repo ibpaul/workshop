@@ -33,7 +33,7 @@ std::unique_ptr<IFilter> FilterFactory::make_static_filter(int num_threads)
     if (num_threads == 0) {
         return unique_ptr<IFilter>(new Filter<TMatrix, float, S, S>(
             std::move(kernel),
-            &convolute<float, S, S>
+            &convolute
         ));
     } else {
         auto func = [](const TMatrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
