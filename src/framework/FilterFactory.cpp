@@ -7,8 +7,12 @@
 #include "framework/Filter.h"
 
 
-// TODO: Remove.
-#include "math/Matrix.h"
+#ifdef LTS_EIGEN_MATRIX
+    #include "math/SimpleMatrix.h"
+#else
+    // TODO: Remove.
+    #include "math/Matrix.h"
+#endif
 
 
 #include "filter/gaussian.h"
@@ -20,7 +24,9 @@ using namespace std;
 using lts::math::MatrixFast;
 using lts::math::Matrix;
 using lts::math::IMatrix;
-using lts::math::MatrixEigen;
+//using lts::math::MatrixEigen;
+#else
+using lts::math::SimpleMatrix;
 #endif
 using lts::filter::load_gaussian;
 using lts::filter::convolute;
@@ -35,12 +41,16 @@ namespace framework {
 #ifdef LTS_EIGEN_MATRIX
 // HACK: Would like to specify the matrices size as defined by the Eigen library.
 template<int S>
+//template <typename T>
+std::unique_ptr<IFilter> make_static_matrix(int num_threads)
 #else
 template<size_t S>
+std::unique_ptr<IFilter> make_static_matrix(int num_threads)
 #endif
-std::unique_ptr<IFilter> make_fast_filter(int num_threads)
 {
     #ifdef LTS_EIGEN_MATRIX
+    //auto kernel = make_unique<T>();
+    //auto kernel = make_unique<T<float, S, S>>();
     auto kernel = make_unique<Eigen::Matrix<float, S, S>>();
     #else
     auto kernel = make_unique<MatrixFast<float, S, S>>();
@@ -51,6 +61,7 @@ std::unique_ptr<IFilter> make_fast_filter(int num_threads)
     if (num_threads == 0) {
         #ifdef LTS_EIGEN_MATRIX
         return unique_ptr<IFilter>(new FilterFast<float, S, S>(
+        //return unique_ptr<IFilter>(new T(
             std::move(kernel),
             &convolute<float, S, S>
         ));
@@ -89,11 +100,38 @@ std::unique_ptr<IFilter> make_fast_filter(int num_threads)
 }
 
 
+#ifdef LTS_EIGEN_MATRIX
+template<int S>
+std::unique_ptr<IFilter> make_simple_static_matrix(int num_threads)
+{
+    auto kernel = make_unique<SimpleMatrix<float, S, S>>();
+
+    load_gaussian(*kernel);
+
+    if (num_threads == 0) {
+        return unique_ptr<IFilter>(new FilterSimple<float, S, S>(
+            std::move(kernel),
+            &convolute<float, S, S>
+        ));
+    } else {
+        auto func = [](const SimpleMatrix<float, S, S>& k, const uint8_t* input, size_t width, size_t height, size_t channels, uint8_t* output) {
+            convolute_threaded(5, k, input, width, height, channels, output);
+        };
+
+        return unique_ptr<IFilter>(new FilterSimple<float, S, S>(
+            std::move(kernel),
+            func
+        ));
+    }
+}
+#endif
+
+
 map<string, bool> FilterFactory::process_use_flags(queue<string>& params)
 {
     map<string, bool> use_flags {
         {"nofast", false},
-        {"eigen", false}
+        {"simple", false}
     };
 
     while (!params.empty()) {
@@ -150,34 +188,36 @@ std::unique_ptr<IFilter> FilterFactory::create(const std::string& spec, int num_
 
     auto flags = process_use_flags(q);
 
-    if (flags["eigen"]) {
-        #ifdef LTS_EIGEN_MATRIX
-        throw runtime_error("deprecated");
+    if (flags["simple"]) {
+        #ifndef LTS_EIGEN_MATRIX
+        throw runtime_error("invalid");
         #else
-        if (flags["nofast"]) {
-            throw runtime_error("options 'eigen' and 'nofast' can not be used together");
-        }
+        if (size.first != size.second)
+            throw invalid_argument("matrix sizes must be the same for option 'simple'");
 
-        unique_ptr<IMatrix<float>> kernel {new MatrixEigen<float>{size.first, size.second}};
-        load_gaussian(*kernel);
-
-        return unique_ptr<IFilter>(new Filter<float>(
-            std::move(kernel),
-            &convolute
-        ));
+        if (size.first == 3)
+            return make_simple_static_matrix<3>(num_threads);
+        if (size.first == 5)
+            return make_simple_static_matrix<5>(num_threads);
+        if (size.first == 7)
+            return make_simple_static_matrix<7>(num_threads);
+        if (size.first == 9)
+            return make_simple_static_matrix<9>(num_threads);
+        if (size.first == 11)
+            return make_simple_static_matrix<11>(num_threads);
         #endif
     } else if (size.first == size.second && !flags["nofast"]) {
-        // We can make a FilterFast.
+        // We can make a static Matrix.
         if (size.first == 3)
-            return make_fast_filter<3>(num_threads);
+            return make_static_matrix<3>(num_threads);
         if (size.first == 5)
-            return make_fast_filter<5>(num_threads);
+            return make_static_matrix<5>(num_threads);
         if (size.first == 7)
-            return make_fast_filter<7>(num_threads);
+            return make_static_matrix<7>(num_threads);
         if (size.first == 9)
-            return make_fast_filter<9>(num_threads);
+            return make_static_matrix<9>(num_threads);
         if (size.first == 11)
-            return make_fast_filter<11>(num_threads);
+            return make_static_matrix<11>(num_threads);
     }
 
     if (num_threads > 0) {

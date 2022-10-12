@@ -6,7 +6,12 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
-#include "math/Matrix.h"
+#ifdef LTS_EIGEN_MATRIX
+	#include <Eigen/Dense>
+	#include "math/SimpleMatrix.h"
+#else
+	#include "math/SimpleMatrix.h"
+#endif
 #include "filter/gaussian.h"
 #include "filter/operations.h"
 #include "image/patterns.h"
@@ -35,7 +40,12 @@ int main(void)
 {
     auto ret {0};
 
-    lts::filter::KernelFast<float, 3, 3> kernel;
+	#ifdef LTS_EIGEN_MATRIX
+	Eigen::Matrix<float, 3, 3> kernel;
+	//lts::math::SimpleMatrix<float, 3, 3> kernel;
+	#else
+    lts::math::SimpleMatrix<float, 3, 3> kernel;
+	#endif
     lts::filter::load_gaussian(kernel);
 
     auto input = lts::image::vertical_lines(256, 256, 1);
@@ -51,7 +61,7 @@ int main(void)
 
 	while (1) {
         auto start = HAL_GetTick();
-        lts::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
+        lts::filter::convolute<float, 3, 3>(kernel, input.get(), 256, 256, 1, output_image);
         auto end = HAL_GetTick();
         auto diff = end - start;
 

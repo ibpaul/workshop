@@ -59,15 +59,17 @@ __Optimized Kernel Sizes__
 Sorry if your favorite kernel size is not included in the list of optimized sizes.
 This is only specific to the *filter* tool. If you include the kernel library code
 in your project, you can get this optimization by creating your own templated
-kernel class, say by using `KernelFast<float, 21, 21>` in your code for your favorite
-`21` x `21` kernel size.
+kernel class, say by using the `Eigen::Matrix<float, 21, 21>` in your code for your
+favorite `21` x `21` kernel size.
 
-### Eigen Library
-Instead of using the built-in kernel structures and associated algorithms, the *filter*
-tool allows you to use structures and algorithms included in the [*Eigen library*](https://eigen.tuxfamily.org/index.php?title=Main_Page).
-This is specified in the filter type parameters with `eigen` like below: \
+### Built-In Matrix
+Instead of using the matrices provided by the [*Eigen library*](https://eigen.tuxfamily.org/index.php?title=Main_Page),
+you can use the small build-in matrix `SimpleMatrix`. This is useful for performing
+timing comparisons with the Eigen library and adjusting your compiler's optimization
+settings. Note that the `SimpleMatrix` is only available for the provided list of *Optimized
+Kernel Sizes* above. \
 \
-`--type gaussian{5,5,eigen}`
+`--type gaussian{5,5,simple}`
 
 
 ## Performance Testing

@@ -7,6 +7,7 @@
 #include "framework/IFilter.h"
 
 #ifdef LTS_EIGEN_MATRIX
+    #include "math/SimpleMatrix.h"
     #include <Eigen/Dense>
 #else
     #include "math/Matrix.h"
@@ -14,6 +15,35 @@
 
 namespace lts {
 namespace framework {
+
+
+#ifdef LTS_EIGEN_MATRIX
+
+template<typename T, size_t M, size_t N>
+class FilterSimple : public IFilter
+{
+public:
+    using ProcessFunction = void (*)(
+        const math::SimpleMatrix<T, M, N>&, const uint8_t* input,
+        size_t, size_t, size_t, uint8_t*);
+
+    FilterSimple(std::unique_ptr<math::SimpleMatrix<T,M,N>> kernel, ProcessFunction process)
+        : _kernel(move(kernel)),
+          _process(process)
+    { }
+
+    void process(uint8_t *data, size_t width, size_t height, size_t channels, uint8_t *output) override
+    {
+        _process(*_kernel, data, width, height, channels, output);
+    }
+
+private:
+    std::unique_ptr<math::SimpleMatrix<T, M, N>> _kernel;
+    ProcessFunction _process;
+};
+
+#endif
+
 
 template<typename T, size_t M, size_t N>
 class FilterFast : public IFilter

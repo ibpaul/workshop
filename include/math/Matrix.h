@@ -6,7 +6,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
-#include "Eigen/Dense"
+#include <array>
+#ifdef LTS_EIGEN_MATRIX
+    #include "Eigen/Dense"
+#endif
 #include "optimize_flags.h"
 
 namespace lts {
@@ -86,7 +89,7 @@ private:
 };
 
 
-template<typename T>
+/*template<typename T>
 class MatrixEigen : public IMatrix<T> {
 public:
     MatrixEigen(size_t m, size_t n)
@@ -102,7 +105,7 @@ public:
 private:
 #endif
     Eigen::MatrixXf w;
-};
+};*/
 #endif
 
 
