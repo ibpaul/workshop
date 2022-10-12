@@ -1,5 +1,5 @@
-// Common filtering operations.
-
+/// @file
+/// Common filtering operations.
 #ifndef LTS_FILTER_OPERATIONS_H
 #define LTS_FILTER_OPERATIONS_H
 
@@ -15,6 +15,14 @@ namespace lts {
 namespace filter {
 
 
+/// \brief Performs image-style convolution.
+///
+/// \param kernel Filtering kernel pre-loaded with weights.
+/// \param input Block of image data to process.
+/// \param ncols Height of the image.
+/// \param nrows Width of the image.
+/// \param channels Number of channels in the image (e.g. 1 channel for monochrome, 3 channels for RGB).
+/// \param output Output block to store the processed image.
 template<template<typename, int, int...> class TMatrix, typename T, int Rows, int Cols>
 void convolute(
     const TMatrix<T, Rows, Cols>& kernel,
@@ -27,16 +35,22 @@ void convolute(
 {
     std::unique_ptr<float[]> new_pixel { new float[channels] };
 
+    // Hopefully the compiler will optimize the inner for loop below for static matrices with
+    // sizes known at compile-time. This will be a loop unrolling optimization. You may have
+    // to play around with your compiler settings to allow this optimization to be performed.
+    const auto krows = Rows == Eigen::Dynamic ? kernel.rows() : Rows;
+    const auto kcols = Cols == Eigen::Dynamic ? kernel.cols() : Cols;
+
     for (size_t y = 0; y < nrows; ++y) {
         for (size_t x = 0; x < ncols; ++x) {
             std::fill_n(new_pixel.get(), channels, static_cast<float>(0.0f));
 
-            for (int ky = 0; ky < Rows; ++ky) {
-                for (int kx = 0; kx < Cols; ++kx) {
+            for (int ky = 0; ky < krows; ++ky) {
+                for (int kx = 0; kx < kcols; ++kx) {
                     auto kc = kernel(ky, kx);
 
-                    int input_x = static_cast<int>(x - Cols / 2 + kx);
-                    int input_y = static_cast<int>(y - Rows / 2 + ky);
+                    int input_x = static_cast<int>(x - kcols / 2 + kx);
+                    int input_y = static_cast<int>(y - krows / 2 + ky);
 
                     // Adjust input coordinate if kernel is overhanging the input image's side/top.
                     if (input_x < 0)
@@ -62,29 +76,6 @@ void convolute(
         }
     }
 }
-
-
-// Performs a convolution on the input data using the supplied filter kernel.
-//
-// [parameters]
-// kernel - The prefilled kernel.
-// input - The input data to process.
-// ncols - Number of cols of the input data (e.g. the image's width)
-// nrows - Number of rows of the input data (e.g. the image's height)
-// channels - Number of channels in the input data (e.g. 3 for RGB images).
-// output - Output of the processed data. May be provided to the function uninitialized.
-//
-// [notes]
-//  - This convolution implementation may not be mathematically pure since it does not involve
-//    flipping of the kernel's matrix.
-void convolute(
-    const Eigen::MatrixXf& kernel,
-    const uint8_t* input,
-    size_t ncols,
-    size_t nrows,
-    size_t channels,
-    uint8_t* output
-);
 
 
 // Performs convolution over a specified range of rows in an image, known as the work area.
