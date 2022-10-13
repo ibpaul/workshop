@@ -14,14 +14,8 @@ struct Options {
     bool test;
     int num_test_cycles {1};
     int num_test_threads {1};
-    #if USE_FACTORY
     std::string filter_spec;
-    #else
-    std::string filter;
-    int num_filter_params_provided {0};
-    int filter_param_0_int {0};
-    int filter_param_1_int {0};
-    #endif
+    int threads {0};
 };
 
 // Process and determine all command-line options provided. Will call printer error and call exit() for invalid

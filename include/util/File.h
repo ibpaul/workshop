@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <stdexcept>
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 

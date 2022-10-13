@@ -1,3 +1,9 @@
 libs/** linguist-vendored
-stm/**/*.c linquist-generated
+
+# I have not been able to find a method that discards all of the auto-generated
+# code that STM32CubeIDE generates for a project and making the repository look
+# like it is principally a C instead of a C++ project. Just gonna ignore everything
+# in the 'stm' folder for now.
+stm/** linguist-vendored
+#stm/**/*.c linquist-generated
 #stm/*.h linquist-generated

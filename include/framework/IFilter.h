@@ -5,12 +5,12 @@
 
 #include <cstdint>
 
-namespace LTS {
+namespace lts {
 namespace framework {
 
 class IFilter {
 public:
-    virtual void process(uint8_t* data, size_t height, size_t width, size_t channels, uint8_t* output) = 0;
+    virtual void process(uint8_t* data, size_t width, size_t height, size_t channels, uint8_t* output) = 0;
     virtual ~IFilter() = default;
 };
 

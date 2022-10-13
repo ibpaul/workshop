@@ -5,6 +5,7 @@ class FilterFactory {
     of kernel and processing function.
     ---
     create(string spec) : IFilter*
+    create(string spec, int num_threads) : IFilter*
 }
 
 abstract IFilter {

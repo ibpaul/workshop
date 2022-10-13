@@ -6,7 +6,7 @@
 #include <numeric>
 #include <cmath>
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 // Computes the mean for a collection of values.

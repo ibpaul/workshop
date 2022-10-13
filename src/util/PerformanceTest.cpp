@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 
@@ -103,12 +103,12 @@ void PerformanceTest::print_test_statistics(double total_test_time_ms)
     if (_display) {
         string jitter {"n/a"};
         if (_durations.size() > 1)
-            jitter = to_string(LTS::util::standard_deviation(_durations));
+            jitter = to_string(lts::util::standard_deviation(_durations));
 
         *_displayStream <<
             "[Test Results]" << std::endl <<
             "total test time (ms): " << total_test_time_ms << std::endl <<
-            "mean time (ms): " << LTS::util::mean(_durations) << std::endl <<
+            "mean time (ms): " << lts::util::mean(_durations) << std::endl <<
             "jitter (std dev): " << jitter << std::endl;
     }
 }
@@ -118,7 +118,7 @@ void PerformanceTest::save_report_file()
     if (_reportFile.empty())
         return;
 
-    LTS::util::File timeReportFile(_reportFile, "w");
+    lts::util::File timeReportFile(_reportFile, "w");
     fprintf(timeReportFile(), "IndividualRunTimes\n");
 
     for (auto& d : _durations)

@@ -2,34 +2,31 @@
 #include <functional>
 #include <memory>
 #include <queue>
+#include <map>
 
 // Hide error message reporting from CImg.
 #define cimg_verbosity 0
 #include "CImg.h"
 #include "framework/FilterFactory.h"
 #include "filter/gaussian.h"
-#include "filter/versions/gaussian_v0.h"
-#include "filter/versions/gaussian_v1.h"
-#include "filter/versions/gaussian_v2.h"
-#include "filter/versions/gaussian_v3.h"
-#include "filter/versions/gaussian_v4.h"
-#include "image/TestImages.h"
+#include "image/patterns.h"
 #include "util/PerformanceTest.h"
 #include "util/string.h"
 #include "options.h"
 #include "config.h"
+#include "filter/operations.h"
 
 using namespace std;
 using namespace cimg_library;
 
 using Image = CImg<unsigned char>;
-using LTS::util::PerformanceTest;
+using lts::util::PerformanceTest;
+using lts::framework::FilterFactory;
 
 
 unique_ptr<Image> load_image(const string& input);
 void save_image(const Image& image, const string& file_name);
 void perform_test(const function<void()>& test_func, const Options& options);
-LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts);
 
 
 int main(int argc, char* argv[])
@@ -39,30 +36,18 @@ int main(int argc, char* argv[])
     unique_ptr<Image> image {load_image(opts.input)};
     Image output(image->width(), image->height(), image->depth(), image->spectrum());
 
-    #if USE_FACTORY
+    std::unique_ptr<lts::framework::IFilter> filter;
 
-    LTS::framework::FilterFactory factory;
-    auto filter = factory.create(opts.filter_spec);
-
-    function<void()> test_func = ([&](){
-        filter->process(image->data(), image->height(), image->width(), image->spectrum(), output.data());
-    });
-
-    #else
-
-    unique_ptr<LTS::filter::ImageKernel> kernel;
     try {
-        kernel = unique_ptr<LTS::filter::ImageKernel>{create_kernel(opts.filter, opts)};
-    } catch (invalid_argument& e) {
+        filter = FilterFactory::create(opts.filter_spec, opts.threads);
+    } catch (exception& e) {
         cout << e.what() << endl;
         exit(1);
     }
 
     function<void()> test_func = ([&](){
-        kernel->process(image->data(), image->width(), image->height(), output.data(), image->spectrum());
+        filter->process(image->data(), image->height(), image->width(), image->spectrum(), output.data());
     });
-
-    #endif
 
     if (opts.test) {
         perform_test(test_func, opts);
@@ -77,24 +62,30 @@ int main(int argc, char* argv[])
 
 unique_ptr<Image> load_image(const string& input)
 {
+    map<string, void(*)(uint8_t*, size_t, size_t, size_t)> patterns;
+    patterns["vertical-lines"] = lts::image::vertical_lines;
+    patterns["horizontal-lines"] = lts::image::horizontal_lines;
+
+    auto elements = lts::util::split(input, {',', '{', '}'});
+
     // Check if any standard test patterns were specified.
-    if (LTS::util::starts_with(input, "vertical-lines")) {
-        vector<string> elements = LTS::util::split(input, {',', '{', '}'});
+    if (patterns.find(elements[0]) != patterns.end()) {
         queue<string> q;
         for (auto& e : elements)
             q.push(e);
 
+        auto pattern = q.front();
         q.pop();
 
         if (q.empty()) {
-            cout << "width must be specified for vertical-lines" << endl;
+            cout << "width must be specified for " << pattern << endl;
             exit(1);
         }
         auto width = stoi(q.front());
         q.pop();
 
         if (q.empty()) {
-            cout << "height must be specified for vertical-lines" << endl;
+            cout << "height must be specified for " << pattern << endl;
             exit(1);
         }
         auto height = stoi(q.front());
@@ -107,7 +98,7 @@ unique_ptr<Image> load_image(const string& input)
         }
 
         auto image = make_unique<Image>(width, height, 1, channels);
-        LTS::image::vertical_lines(image->data(), width, height, channels);
+        patterns[pattern](image->data(), width, height, channels);
         return image;
     }
 
@@ -152,25 +143,4 @@ void perform_test(const function<void()>& test_func, const Options& options)
         cout << "Unexpected error occurred." << endl;
         exit(1);
     }
-}
-
-
-LTS::filter::ImageKernel* create_kernel(const string& name, const Options& opts)
-{
-    if (LTS::util::starts_with(name, "gaussian")) {
-        if (name == "gaussian")
-            return new LTS::filter::GaussianKernel;
-        if (name == "gaussian_v0")
-            return new LTS::filter::versions::GaussianKernel_v0;
-        if (name == "gaussian_v1")
-            return new LTS::filter::versions::GaussianKernel_v1;
-        if (name == "gaussian_v2")
-            return new LTS::filter::versions::GaussianKernel_v2;
-        if (name == "gaussian_v3")
-            return new LTS::filter::versions::GaussianKernel_v3;
-        if (name == "gaussian_v4")
-            return new LTS::filter::versions::GaussianKernel_v4;
-    }
-
-    throw invalid_argument("unrecognized filter type");
 }

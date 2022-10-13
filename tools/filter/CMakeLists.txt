@@ -1,5 +1,10 @@
-include_directories(${Workshop_SOURCE_DIR}/include)
-include_directories(${Workshop_SOURCE_DIR}/libs/cxxopts)
+set(INCLUDES
+    ${Workshop_SOURCE_DIR}/include
+    ${Workshop_SOURCE_DIR}/libs/cxxopts
+    ${Workshop_SOURCE_DIR}/libs/eigen
+)
+
+include_directories(${INCLUDES})
 
 add_executable(
 	filter
@@ -13,15 +18,15 @@ include_directories(${Workshop_SOURCE_DIR}/libs/libpng)
 
 
 if (WIN32)
-    target_link_libraries(filter PUBLIC lts_filter lts_framework image util png_static zlibstatic)
+    target_link_libraries(filter PUBLIC lts_framework lts_filter lts_image lts_util png_static zlibstatic)
 else()
-    target_link_libraries(filter PUBLIC lts_filter lts_framework image util png_static X11)
+    target_link_libraries(filter PUBLIC lts_framework lts_filter lts_image lts_util png_static X11)
 endif()
 
 set_target_properties(
 	filter
 	PROPERTIES
 	VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-	VS_DEBUGGER_COMMAND_ARGUMENTS "--type=gaussian{10,10} data/peppers.png output.png"
+	VS_DEBUGGER_COMMAND_ARGUMENTS "--type=gaussian{3,3} data/peppers.png output.png"
 )
 

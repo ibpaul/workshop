@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-namespace LTS {
+namespace lts {
 
 
 class Image

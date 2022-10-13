@@ -4,33 +4,34 @@
 #define LTS_FRAMEWORK_FILTER_H
 
 #include <memory>
+#include <Eigen/Dense>
 #include "framework/IFilter.h"
-#include "filter/Kernel.h"
 
-namespace LTS {
+
+namespace lts {
 namespace framework {
 
 
-template<typename T>
+template<template <typename, int, int...> class TMatrix, typename T, int M, int N>
 class Filter : public IFilter
 {
 public:
     using ProcessFunction = void (*)(
-        const filter::IKernel<T>&, const uint8_t*,
+        const TMatrix<T, M, N>&, const uint8_t* input,
         size_t, size_t, size_t, uint8_t*);
 
-    Filter(std::unique_ptr<filter::IKernel<T>> kernel, ProcessFunction process)
+    Filter(std::unique_ptr<TMatrix<T,M,N>> kernel, ProcessFunction process)
         : _kernel(move(kernel)),
           _process(process)
     { }
 
-    void process(uint8_t *data, size_t height, size_t width, size_t channels, uint8_t *output) override
+    void process(uint8_t *data, size_t width, size_t height, size_t channels, uint8_t *output) override
     {
-        _process(*_kernel, data, height, width, channels, output);
+        _process(*_kernel, data, width, height, channels, output);
     }
 
 private:
-    std::unique_ptr<filter::IKernel<T>> _kernel;
+    std::unique_ptr<TMatrix<T, M, N>> _kernel;
     ProcessFunction _process;
 };
 

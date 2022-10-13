@@ -10,7 +10,7 @@
 #include <thread>
 #include <functional>
 
-namespace LTS {
+namespace lts {
 namespace util {
 
 

@@ -1,0 +1,54 @@
+@startuml
+
+abstract IMatrix<T> {
+    virtual T& at(m, n)
+    virtual const T& at(m, n) const
+    virtual size_t size_m() const
+    virtual size_t size_n() const
+}
+
+class Matrix2Fast<T,M,N> {
+    Fastest filter processing.
+    Size set at compile-time.
+    ---
+    {field} w : T[M][N] // weights
+}
+
+class Matrix<T> {
+    Slower filter processing.
+    Size set at run-time.
+    ---
+    ctor(size_t m, size_t n)
+    ---
+    - w : unique_ptr<T[]>
+}
+
+package "Eigen Library" {
+    class MatrixXd
+}
+
+class MatrixEigen<T> {
+    Data structures from the Eigen
+    library are used.
+    ---
+    ctor(m, n)
+    ---
+    w : MatrixXd
+}
+
+
+IMatrix <|-- Matrix2Fast
+IMatrix <|-- Matrix
+IMatrix <|-- MatrixEigen
+
+
+class global {
+    convolute(IMatrix&)
+    convolute(MatrixFast<T,M,N>&)
+
+    load_gaussian(IMatrix&)
+}
+
+
+
+@enduml

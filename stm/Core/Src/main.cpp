@@ -24,10 +24,9 @@
 /* USER CODE BEGIN Includes */
 #include <chrono>
 #include <stdio.h>
-#include "filter/Kernel.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
-#include "image/TestImages.h"
+#include "image/patterns.h"
 #include "usbd_cdc_if.h"
 
 using namespace std::chrono;
@@ -108,14 +107,14 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  LTS::filter::KernelFast<float, 3, 3> kernel;
-  LTS::filter::load_gaussian(kernel);
+  lts::filter::KernelFast<float, 3, 3> kernel;
+  lts::filter::load_gaussian(kernel);
 
-  auto input = LTS::image::vertical_lines(256, 256, 1);
+  auto input = lts::image::vertical_lines(256, 256, 1);
 
   auto start = HAL_GetTick();
-  LTS::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
-  //LTS::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
+  lts::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
+  //lts::filter::convolute(kernel, IMAGE_DATA, 512, 512, 3, output_image);
   auto end = HAL_GetTick();
   auto diff = end - start;
 

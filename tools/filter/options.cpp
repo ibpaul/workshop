@@ -8,6 +8,7 @@ using namespace std;
 
 void process_test_options(cxxopts::ParseResult& result, Options& opts);
 void process_type_options(cxxopts::ParseResult& result, Options& opts);
+void process_threaded_options(cxxopts::ParseResult& result, Options& opts);
 
 
 cxxopts::Options program_options()
@@ -20,6 +21,7 @@ cxxopts::Options program_options()
             ("t,test", "Perform timing test on algorithm", cxxopts::value<string>())
             ("type", "Filter type to use.", cxxopts::value<string>())
             ("r,report", "Test report output file.", cxxopts::value<string>())
+            ("threads", "Enable filter threading.", cxxopts::value<int>())
             ("h,help", "Print usage.");
 
     options.parse_positional({"input", "output"});
@@ -62,11 +64,30 @@ Options process_options(
     if (result.count("test"))
         process_test_options(result, opts);
 
+    process_threaded_options(result, opts);
+
     assert(opts.num_test_threads > 0);
     assert(opts.num_test_cycles > 0);
-    assert(!opts.filter.empty());
+    assert(!opts.filter_spec.empty());
 
     return opts;
+}
+
+
+void process_threaded_options(cxxopts::ParseResult& result, Options& opts)
+{
+    if (!result.count("threads")) {
+        return;
+    }
+
+    auto numOfThreads = result["threads"].as<int>();
+
+    if (numOfThreads < 1) {
+        cout << "Invalid number of threads specified." << endl;
+        exit(1);
+    }
+
+    opts.threads = numOfThreads;
 }
 
 
@@ -77,36 +98,7 @@ void process_type_options(cxxopts::ParseResult& result, Options& opts)
         exit(1);
     }
 
-    auto str = result["type"].as<string>();
-
-    #if USE_FACTORY
-    opts.filter_spec = str;
-    #else
-    auto vals_list = LTS::util::split(str, {',', '{', '}'});
-    queue<string, deque<string>> vals {deque<string>(vals_list.begin(), vals_list.end())};
-
-    if (vals.empty()) {
-        cout << "Unable to parse --type parameter." << endl;
-        exit(1);
-    }
-
-    // NOTE: Need to check that the filter type is valid in the future.
-    opts.filter = vals.front();
-    vals.pop();
-
-    // NOTE: Need a better way to extract filter parameters.
-    if (!vals.empty()) {
-        opts.num_filter_params_provided++;
-        opts.filter_param_0_int = stoi(vals.front());
-        vals.pop();
-    }
-
-    if (!vals.empty()) {
-        opts.num_filter_params_provided++;
-        opts.filter_param_1_int = stoi(vals.front());
-        vals.pop();
-    }
-    #endif
+    opts.filter_spec = result["type"].as<string>();
 }
 
 
@@ -115,7 +107,7 @@ void process_test_options(cxxopts::ParseResult& result, Options& opts)
     opts.test = true;
 
     auto test_params_str = result["test"].as<string>();
-    auto params = LTS::util::split(test_params_str, ',');
+    auto params = lts::util::split(test_params_str, ',');
 
     if (!params.empty()) {
         if (params.size() > 2) {
