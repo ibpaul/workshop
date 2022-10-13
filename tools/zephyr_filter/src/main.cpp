@@ -34,10 +34,12 @@ class A {
 
 int main(void)
 {
+    using TMatrix = Eigen::Matrix<float, 3, 3>;
+    //using TMatrix = lts::math::SimpleMatrix<float, 3, 3>;
+
     auto ret {0};
 
-	Eigen::Matrix<float, 3, 3> kernel;
-	//lts::math::SimpleMatrix<float, 3, 3> kernel;
+    TMatrix kernel;
     lts::filter::load_gaussian(kernel);
 
     auto input = lts::image::vertical_lines(256, 256, 1);
@@ -53,7 +55,7 @@ int main(void)
 
 	while (1) {
         auto start = HAL_GetTick();
-        lts::filter::convolute<float, 3, 3>(kernel, input.get(), 256, 256, 1, output_image);
+        lts::filter::convolute(kernel, input.get(), 256, 256, 1, output_image);
         auto end = HAL_GetTick();
         auto diff = end - start;
 
