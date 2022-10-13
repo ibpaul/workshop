@@ -7,5 +7,6 @@ include_directories(${INCLUDES})
 
 add_library(
     lts_framework
+    STATIC
     FilterFactory.cpp
 )

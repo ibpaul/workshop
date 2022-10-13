@@ -18,7 +18,10 @@ set(SFML_LIBS_AND_DEPS
 
 
 if (WIN32)
-    target_link_libraries(play PUBLIC lts_filter lts_image lts_util png_static zlibstatic ${SFML_LIBS_AND_DEPS})
+    target_link_libraries(play
+		PRIVATE lts_filter lts_image lts_util png_static zlibstatic
+		PUBLIC ${SFML_LIBS_AND_DEPS}
+	)
 else()
     target_link_libraries(play PUBLIC lts_filter lts_image lts_util png_static X11 ${SFML_LIBS_AND_DEPS})
 endif()
