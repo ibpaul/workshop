@@ -1,8 +1,9 @@
 #include <iostream>
+#include <thread>
 #include <SFML/Audio.hpp>
 
 // Hide error message reporting from CImg.
-//#define cimg_verbosity 0
+#define cimg_verbosity 0
 #include "CImg.h"
 #include "util/string.h"
 
@@ -50,12 +51,12 @@ void play_sound(const string& filename)
         exit(1);
     }
 
-    /*try {
+    sf::Sound sound;
+    sound.setBuffer(buffer);
+    sound.play();
 
-    } catch (const exception& e) {
-        cerr << e.what() << endl;
-        exit(1);
-    }*/
+    while (sound.getStatus() == sf::SoundSource::Status::Playing)
+        std::this_thread::sleep_for(100ms);
 }
 
 
