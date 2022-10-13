@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "CImg.h"
+#include "util/CImg_workaround.h"
 #include "image/patterns.h"
 #include "filter/gaussian.h"
 #include "filter/operations.h"
