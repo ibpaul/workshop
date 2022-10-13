@@ -1,4 +1,5 @@
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 // Hide error message reporting from CImg.
 //#define cimg_verbosity 0
@@ -42,7 +43,19 @@ int main(int argc, char* argv[])
 
 void play_sound(const string& filename)
 {
+    sf::SoundBuffer buffer;
 
+    if (!buffer.loadFromFile(filename)) {
+        cerr << "Unable to open file '" << filename << "'." << endl;
+        exit(1);
+    }
+
+    /*try {
+
+    } catch (const exception& e) {
+        cerr << e.what() << endl;
+        exit(1);
+    }*/
 }
 
 

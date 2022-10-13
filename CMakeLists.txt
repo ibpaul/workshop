@@ -14,6 +14,11 @@ endif()
 # this file from here if it doesn't already exist.
 file(COPY_FILE libs/libpng/scripts/pnglibconf.h.prebuilt libs/libpng/pnglibconf.h)
 
+if (WIN32)
+    # DLL need for play tool.
+    file(COPY_FILE libs/SFML/extlibs/bin/x64/openal32.dll ${CMAKE_CURRENT_SOURCE_DIR}/openal32.dll)
+endif()
+
 add_definitions(-Dcimg_use_png)
 
 if (WIN32)
@@ -36,6 +41,7 @@ add_subdirectory(tools/filter)
 add_subdirectory(tools/play)
 add_subdirectory(tools/generate)
 add_subdirectory(libs/libpng)
+add_subdirectory(libs/SFML)
 if (WIN32)
     add_subdirectory(libs/zlib)
 endif()
