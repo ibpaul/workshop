@@ -29,15 +29,24 @@ if (NOT DEFINED ZEPHYR_BASE)
         gaussian_test.cpp
         operations_test.cpp
     )
+    
+    set(TEST_LINKS
+    	lts_filter
+        lts_image
+        lts_util
+        png_static
+    )
+    
+    if (WIN32)
+	    set(TEST_LINKS ${TEST_LINKS} zlibstatic)
+    elseif (UNIX)
+    	set(TEST_LINKS ${TEST_LINKS} X11)
+    endif()
 
     target_link_libraries(
         filter_test
         GTest::gtest_main
-        lts_filter
-        lts_image
-        lts_util
-        png_static
-        zlibstatic
+        ${TEST_LINKS}
     )
 
     include_directories(${Workshop_SOURCE_DIR}/libs/CImg)

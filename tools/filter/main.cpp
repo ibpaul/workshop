@@ -6,7 +6,7 @@
 
 // Hide error message reporting from CImg.
 #define cimg_verbosity 0
-#include "CImg.h"
+#include "util/CImg_workaround.h"
 #include "framework/FilterFactory.h"
 #include "filter/gaussian.h"
 #include "image/patterns.h"
