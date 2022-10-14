@@ -22,7 +22,7 @@ if (DEFINED ZEPHYR_BASE)
     zephyr_library_sources(${SOURCES})
 else()
     include_directories(${INCLUDES})
-    add_library(${LIB_NAME} ${SOURCES})
+    add_library(${LIB_NAME} STATIC ${SOURCES})
 endif()
 
 

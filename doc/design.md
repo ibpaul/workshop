@@ -6,6 +6,8 @@
  - [Process Functions](design/process_functions.md)
  - [Filter Factory](design/filter_factory.md)
  - __Tools__
+   - [Play](tools/play.md)
+   - [Filter](tools/filter.md)
    - [Zephyr Filter](tools/zephyr_filter.md)
 
 ## Definitions
